@@ -1,0 +1,4124 @@
+[
+  {
+    "_id": "6956287aa50a975be889f2cc",
+    "id": "SII-WANGZJ/Polymarket_data",
+    "author": "SII-WANGZJ",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-07-21T09:59:30.000Z",
+    "likes": 85,
+    "private": false,
+    "sha": "6d3c336c39cf1a2dfe53d702ad2c110ab5bdbfde",
+    "description": "\n\nPolymarket Data\n\nComplete Data Infrastructure for Polymarket \u2014 Fetch, Process, Analyze\n\n\nA comprehensive dataset of 1.9 billion trading records from Polymarket, processed into multiple analysis-ready formats. Features cleaned data, unified token perspectives, and user-level transformations \u2014 ready for market research, behavioral studies, and quantitative analysis.\n\n\n\nZhengjie Wang1,2, Leiyu Chao1,3, Yu Bao1,4, Lian Cheng1,3, Jianhan Liao1,5, Yikang Li1,\u2020\n\n\n\n1Shanghai Innovation Institute\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/SII-WANGZJ/Polymarket_data.",
+    "downloads": 26919,
+    "tags": [
+      "size_categories:1B<n<10B",
+      "modality:tabular",
+      "modality:text",
+      "region:us"
+    ],
+    "createdAt": "2026-01-01T07:55:38.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a621659c3e05052122482a1",
+    "id": "trentmkelly/polymarket_historical_data",
+    "author": "trentmkelly",
+    "cardData": {
+      "pretty_name": "Polymarket Historical Data",
+      "license": "cc-by-4.0",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "prediction-markets",
+        "polymarket",
+        "finance",
+        "time-series",
+        "order-books"
+      ],
+      "configs": [
+        {
+          "config_name": "market_snapshots",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/market_snapshots/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "order_book_depth",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/order_book_depth/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "top_holders",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/top_holders/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-10-01T13:32:25.000Z",
+    "likes": 8,
+    "private": false,
+    "sha": "413c5b806b008f20a59ae48ebe0ebfdb0be733c5",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Historical Data\n\t\n\nFrequently collected Polymarket market data stored as Zstandard-compressed\nParquet. New batches are collected approximately every five minutes and\npartitioned by product, date, and collection run. Public upload of collected\ndata began on July 23rd, 2026.\n\n\t\n\t\t\n\t\n\t\n\t\tData Products\n\t\n\n\nmarket_snapshots: best bid/ask, full book JSON, outcome, asset ID, source\ntiming, and collection timing.\norder_book_depth: normalized bid and ask levels with price, size\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/trentmkelly/polymarket_historical_data.",
+    "downloads": 24299,
+    "tags": [
+      "language:en",
+      "license:cc-by-4.0",
+      "region:us",
+      "prediction-markets",
+      "polymarket",
+      "finance",
+      "time-series",
+      "order-books"
+    ],
+    "createdAt": "2026-07-23T13:25:45.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a60f60a2ba28c2abe73a24a",
+    "id": "Houroux/polymarket-l2-history",
+    "author": "Houroux",
+    "cardData": {
+      "license": "other",
+      "task_categories": [
+        "time-series-forecasting",
+        "reinforcement-learning"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "order-book",
+        "market-microstructure"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-10-01T13:31:14.000Z",
+    "likes": 5,
+    "private": false,
+    "sha": "610a34793e89c3a67f7fbbbd03137fab0ec461eb",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket rewarded-market L2 history\n\t\n\nAppend-only archives of public Polymarket CLOB WebSocket messages for markets\neligible for liquidity rewards. The dataset is intended for market\nmicrostructure research, backtests and machine-learning experiments.\nNo wallet data, private keys or authenticated trading information is collected.\nFiles are gzip-compressed JSON Lines and grouped by source and UTC date.\nThe source data comes from Polymarket's public CLOB interfaces and remains\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Houroux/polymarket-l2-history.",
+    "downloads": 17198,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:reinforcement-learning",
+      "license:other",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "order-book",
+      "market-microstructure"
+    ],
+    "createdAt": "2026-07-22T16:55:38.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a18adf11d4a748f4dc1a981",
+    "id": "TimeSeventeen/Polymarket-v1",
+    "author": "TimeSeventeen",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "language": [
+        "en"
+      ],
+      "size_categories": [
+        "1B<n<10B"
+      ],
+      "task_categories": [
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "market-microstructure",
+        "on-chain",
+        "polygon",
+        "orderfilled",
+        "finance"
+      ],
+      "configs": [
+        {
+          "config_name": "orderfilled",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "OrderFilled/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "daily_aligned",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "daily_aligned/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "daily_aligned_multi",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "daily_aligned_multi/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ctf",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "CTF/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-30T02:33:57.000Z",
+    "likes": 23,
+    "private": false,
+    "sha": "5aa1b9d52316a8b2e789e81c8ae42c7ed532e8aa",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket-v1\n\t\n\n\n\nA large-scale dataset of on-chain event logs from Polymarket v1, the prediction-market platform on the Polygon network. The repository contains four layers covering the full contract lifecycle from 2022-11-21 to 2026-04-28 (from first settlement to natural termination): OrderFilled/ (the raw on-chain trade tape), daily_aligned/ (the cleaned, metadata-enriched, and normalized analysis layer for Standard Binary markets, neg_risk=false), daily_aligned_multi/ (the\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/TimeSeventeen/Polymarket-v1.",
+    "downloads": 13863,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "arxiv:2606.04217",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "market-microstructure",
+      "on-chain",
+      "polygon",
+      "orderfilled",
+      "finance"
+    ],
+    "createdAt": "2026-05-28T21:04:49.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a377487ddbe8ac2189eca7f",
+    "id": "THEORACLEEEE/polymarket-predictions",
+    "author": "THEORACLEEEE",
+    "cardData": {
+      "license": "mit",
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "the-oracle"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-10-01T13:26:57.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "12aea7c7ffd4c3e9069d03b5684f8aed28179579",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tTHE ORACLE \u2014 Polymarket predictions\n\t\n\nLive predictions for Polymarket markets, produced by THE ORACLE \u2014 an autonomous\nagent funded by $ORACLE pump.fun creator fees. Each row is a baseline-model\nforecast over live orderbook signals (momentum, microstructure, liquidity).\n\npredictions.json / predictions.csv \u2014 100 markets, refreshed each agent cycle.\nColumns: question, category, market_prob, oracle_prob, edge, confidence, signal,\nmodel, backtest_acc, auc, modelability, volume\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/THEORACLEEEE/polymarket-predictions.",
+    "downloads": 12250,
+    "tags": [
+      "license:mit",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "the-oracle"
+    ],
+    "createdAt": "2026-06-21T05:20:07.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a4843db18c74935cacefcec",
+    "id": "TimeSeventeen/Polymarket-v2",
+    "author": "TimeSeventeen",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "language": [
+        "en"
+      ],
+      "size_categories": [
+        "1B<n<10B"
+      ],
+      "task_categories": [
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "market-microstructure",
+        "on-chain",
+        "polygon",
+        "orderfilled",
+        "finance"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-10-01T00:56:17.000Z",
+    "likes": 7,
+    "private": false,
+    "sha": "8a77cb664d7fc4f33b7b3a2d863d34cd87a7bcfa",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket-v2\n\t\n\nA large-scale dataset of on-chain event logs from Polymarket v2, the prediction-market platform on the Polygon network. The repository contains three layers covering the full contract lifecycle from Polymarket v2 server start: OrderFilled/ (the raw on-chain trade tape), daily_aligned/ (the cleaned, metadata-enriched, and normalized analysis layer, Split by UTC). update daliy.\n",
+    "downloads": 7519,
+    "tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "market-microstructure",
+      "on-chain",
+      "polygon",
+      "orderfilled",
+      "finance"
+    ],
+    "createdAt": "2026-07-03T23:20:59.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a97f93a05bc33ff6c6414e7",
+    "id": "Joseph3222/polymarket-orderbook",
+    "author": "Joseph3222",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket Orderbook Archive",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "finance",
+        "prediction-markets",
+        "polymarket",
+        "orderbook",
+        "limit-order-book",
+        "market-microstructure",
+        "backtesting"
+      ],
+      "size_categories": [
+        "100B<n<1T"
+      ],
+      "configs": [
+        {
+          "config_name": "orderbook_1min",
+          "data_files": "orderbook_1min/**/*.parquet"
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": "orderbook/**/*.parquet"
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-02T13:42:59.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "efe472f1f00a62f2cab1fed2851da439d9c1fe11",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Orderbook Archive\n\t\n\nTick-by-tick Polymarket CLOB (central limit order book) event stream for every\nmarket, 2026-02-22 \u2192 2026-08-10, plus a query-ready 1-minute full-depth L2\nsnapshot rollup derived from it. Parquet, partitioned by UTC day, one file per\nday.\n\n\t\n\t\t\nConfig\nWhat\nDays\nSize\nTypical file\n\n\n\t\t\norderbook\nraw WebSocket event stream (book, price_change, last_trade_price, tick_size_change)\n164\n~1.18 TB\n8 GB (max 14 GB)\n\n\norderbook_1min\nfull L2 book at the end of\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Joseph3222/polymarket-orderbook.",
+    "downloads": 5949,
+    "tags": [
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:100B<n<1T",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "finance",
+      "prediction-markets",
+      "polymarket",
+      "orderbook",
+      "limit-order-book",
+      "market-microstructure",
+      "backtesting"
+    ],
+    "createdAt": "2026-09-02T10:23:54.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a0bde6b7f332b1340422255",
+    "id": "vgregoire/polymarket-users",
+    "author": "vgregoire",
+    "cardData": {
+      "language": [
+        "en"
+      ],
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket Users",
+      "tags": [
+        "prediction-markets",
+        "polymarket",
+        "finance",
+        "cryptocurrency",
+        "user-behavior"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "events",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "events.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "predictions",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "predictions.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "user_features",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "user_features.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "user_pnl_summary",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "user_pnl_summary.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_daily",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_daily/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_daily_resolved",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_daily_resolved/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_daily_no_fee",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_daily_no_fee/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_daily_resolved_no_fee",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_daily_resolved_no_fee/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_change_daily",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_change_daily/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_change_monthly",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_change_monthly.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_category_daily",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_category_daily/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_category_daily_resolved",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_category_daily_resolved/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_category_daily_no_fee",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_category_daily_no_fee/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "pnl_category_daily_resolved_no_fee",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "pnl_category_daily_resolved_no_fee/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "trades",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "trades/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ohlcv_1d",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "ohlcv_1d.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ohlcv_1h",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "ohlcv_1h/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ohlcv_5m",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "ohlcv_5m/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-07-06T21:30:09.000Z",
+    "likes": 11,
+    "private": false,
+    "sha": "91ddb961b090de18fd79e79edd8fa15f36ca11b9",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Users\n\t\n\nTrading activity, profits, and behavioral features for every user on\nPolymarket, the largest on-chain prediction market.\nThe dataset spans from Polymarket's launch on 2022-11-11 to 2026-03-29\nand covers all reconciled end-user trades, daily mark-to-market PnL, and a\nwide set of user-level behavioral features. Built from on-chain CTF Exchange\nevents on Polygon.\nThis is the research dataset behind:\n\nAkey, P., Gr\u00e9goire, V., Harvie, N., & Martineau, C. (2026).\nWho\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/vgregoire/polymarket-users.",
+    "downloads": 5195,
+    "tags": [
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "prediction-markets",
+      "polymarket",
+      "finance",
+      "cryptocurrency",
+      "user-behavior"
+    ],
+    "createdAt": "2026-05-19T03:52:11.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a45e718f2a6f0533043fdee",
+    "id": "Becky7777777/polymarket-search-index",
+    "author": "Becky7777777",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-10-01T11:51:41.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "5cc5ecbcb699e5a01066f1b06c6b10e20f555102",
+    "downloads": 3701,
+    "tags": [
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-07-02T04:20:40.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a43c60d7bbb2b62123c12cf",
+    "id": "moose-code/polymarket-onchain-v1",
+    "author": "moose-code",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket On-Chain, Complete v1 Dataset",
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "defi",
+        "onchain",
+        "polygon",
+        "duckdb"
+      ],
+      "size_categories": [
+        "n>1B"
+      ],
+      "configs": [
+        {
+          "config_name": "order_filled",
+          "data_files": "order_filled/**/*.parquet"
+        },
+        {
+          "config_name": "orders_matched",
+          "data_files": "orders_matched/**/*.parquet"
+        },
+        {
+          "config_name": "fee_refunded",
+          "data_files": "fee_refunded/**/*.parquet"
+        },
+        {
+          "config_name": "split",
+          "data_files": "split/**/*.parquet"
+        },
+        {
+          "config_name": "merge",
+          "data_files": "merge/**/*.parquet"
+        },
+        {
+          "config_name": "redemption",
+          "data_files": "redemption/**/*.parquet"
+        },
+        {
+          "config_name": "neg_risk_conversion",
+          "data_files": "neg_risk_conversion/**/*.parquet"
+        },
+        {
+          "config_name": "fpmm_transaction",
+          "data_files": "fpmm_transaction/**/*.parquet"
+        },
+        {
+          "config_name": "user_position",
+          "data_files": "user_position.parquet"
+        },
+        {
+          "config_name": "wallet",
+          "data_files": "wallet.parquet"
+        },
+        {
+          "config_name": "market_data",
+          "data_files": "market_data.parquet"
+        },
+        {
+          "config_name": "condition",
+          "data_files": "condition.parquet"
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": "orderbook.parquet"
+        },
+        {
+          "config_name": "market",
+          "data_files": "market.parquet"
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-07-08T09:39:21.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "7eeb860dea5b79d5c74f3182b70bd08c85c8f833",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket On-Chain: the complete v1 dataset\n\t\n\nEvery trade, position, and payout on Polymarket, from the 2020 launch through April 2026. That is 1.17 billion trades, 2.74 billion records, $59.9B in volume, and 2.6 million traders. All of it free under CC-BY, and you can query the whole thing from your terminal without downloading a single file.\n\nAcademics and researchers: the snapshot is free forever under CC-BY. If you need it live and continuously updated, Envio offers an\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/moose-code/polymarket-onchain-v1.",
+    "downloads": 3277,
+    "tags": [
+      "license:cc-by-4.0",
+      "size_categories:1B<n<10B",
+      "modality:image",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "defi",
+      "onchain",
+      "polygon",
+      "duckdb"
+    ],
+    "createdAt": "2026-06-30T13:35:09.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a44928f7fd087061688d253",
+    "id": "gregyoung14/openmarket-btc-polymarket",
+    "author": "gregyoung14",
+    "cardData": {
+      "license": "apache-2.0",
+      "task_categories": [
+        "tabular-classification",
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "prediction-markets",
+        "polymarket",
+        "binance",
+        "bitcoin",
+        "market-microstructure",
+        "high-frequency-data"
+      ],
+      "pretty_name": "OpenMarket BTC Polymarket",
+      "arxiv": "2607.26245",
+      "size_categories": [
+        "100M<n<1B"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-07-31T02:05:24.000Z",
+    "likes": 3,
+    "private": false,
+    "sha": "74502466d1a7cef56395bfd8d0b465fbebc849cf",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tOpenMarket BTC Polymarket\n\t\n\nOpenMarket BTC Polymarket is a high-frequency research dataset pairing\nBinance BTC/USDT market data with Polymarket BTC binary-market order book\nevents.\nThe dataset is released to support reproducible prediction-market\nresearch, feature engineering, market microstructure analysis, and\nbacktesting.\n\n\t\n\t\t\n\t\n\t\n\t\tPaper\n\t\n\nThis dataset accompanies OpenMarket: A Synchronized Polymarket-Binance\nDataset for High-Frequency Prediction-Market\nResearch\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/gregyoung14/openmarket-btc-polymarket.",
+    "downloads": 2764,
+    "tags": [
+      "task_categories:tabular-classification",
+      "task_categories:time-series-forecasting",
+      "license:apache-2.0",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "arxiv:2607.26245",
+      "region:us",
+      "prediction-markets",
+      "polymarket",
+      "binance",
+      "bitcoin",
+      "market-microstructure",
+      "high-frequency-data"
+    ],
+    "createdAt": "2026-07-01T04:07:43.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69dd31d127c330638d3dbb10",
+    "id": "rameez543/polymarket_bot_data",
+    "author": "rameez543",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-14T12:21:40.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "8091498e6e0b4074311a1a91deea1595ed622ce7",
+    "downloads": 2455,
+    "tags": [
+      "size_categories:1K<n<10K",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-04-13T18:11:29.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a61b69b3b8100273a11336d",
+    "id": "wzsg/polymarket-orderfilled-v1",
+    "author": "wzsg",
+    "cardData": {
+      "pretty_name": "Polymarket CLOB V1 OrderFilled (Polygon)",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "tags": [
+        "polymarket",
+        "polygon",
+        "blockchain",
+        "prediction-markets",
+        "parquet"
+      ],
+      "size_categories": [
+        "n>1B"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "event_month=*/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-04T00:11:17.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "3d2bfbafb3095de1bfdb72423ba7e748f401f5f8",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket CLOB V1 OrderFilled (Polygon)\n\t\n\n\u4e2d\u6587\u8bf4\u660e \u00b7 CLOB V2 dataset\n \n  \nThis dataset contains OrderFilled events emitted by Polymarket CLOB V1 Exchange contracts on Polygon mainnet. It covers both standard CTF markets and Neg Risk markets, is partitioned by UTC month, and excludes CLOB V2 contract events.\nExplore V1 and V2 activity, trends, and summary metrics in the interactive live analytics dashboard.\nThe collection, processing, and dashboard source code is available in the\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/wzsg/polymarket-orderfilled-v1.",
+    "downloads": 2418,
+    "tags": [
+      "language:en",
+      "language:zh",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "polygon",
+      "blockchain",
+      "prediction-markets",
+      "parquet"
+    ],
+    "createdAt": "2026-07-23T06:37:15.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa5a1cc0ba6502850100261",
+    "id": "whodisidk/polymarket-btc-updown-exchange-data",
+    "author": "whodisidk",
+    "cardData": {
+      "viewer": false,
+      "tags": [
+        "polymarket",
+        "btc",
+        "up",
+        "down",
+        "prediction-markets",
+        "historical-market-data",
+        "binance",
+        "hyperliquid",
+        "timeseries",
+        "5m",
+        "15m",
+        "1h"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-12T20:18:04.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "03e7d08b585325fa1468001982edae262c69429c",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC Up/Down historical market and exchange data\n\t\n\nSelected inclusive UTC date range: 2026-05-25 through 2026-08-29. Market horizons: 5m / 15m / 1h.\n67 daily archives. Not every date in this range is included. See MANIFEST.txt for the included dates and file sizes.\nHistorical data for Polymarket BTC Up/Down markets, alongside Binance BTCUSDT and Hyperliquid BTC/USDC observations: order-book snapshots, market features, captured trades, lifecycle information and available\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/whodisidk/polymarket-btc-updown-exchange-data.",
+    "downloads": 1987,
+    "tags": [
+      "modality:timeseries",
+      "region:us",
+      "polymarket",
+      "btc",
+      "up",
+      "down",
+      "prediction-markets",
+      "historical-market-data",
+      "binance",
+      "hyperliquid",
+      "timeseries",
+      "5m",
+      "15m",
+      "1h"
+    ],
+    "createdAt": "2026-09-12T19:02:36.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69a31f758d13bda99520a86c",
+    "id": "aliplayer1/polymarket-crypto-updown",
+    "author": "aliplayer1",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-17T18:09:09.000Z",
+    "likes": 11,
+    "private": false,
+    "sha": "ffb15ce5c9bdea2c98f3503973807ec4387c668e",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\n\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/aliplayer1/polymarket-crypto-updown.",
+    "downloads": 1969,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-02-28T17:01:41.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a31a6be6d0c255d5203693e",
+    "id": "kachoio/polymarket-5-minute-crypto-up-down-markets",
+    "author": "kachoio",
+    "cardData": {
+      "license": "cc0-1.0",
+      "pretty_name": "Polymarket 5-Minute Crypto Up/Down Markets",
+      "tags": [
+        "finance",
+        "crypto",
+        "prediction-markets",
+        "polymarket",
+        "order-book",
+        "time-series"
+      ],
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "btc",
+              "path": "btc_markets.parquet"
+            },
+            {
+              "split": "eth",
+              "path": "eth_markets.parquet"
+            },
+            {
+              "split": "sol",
+              "path": "sol_markets.parquet"
+            },
+            {
+              "split": "xrp",
+              "path": "xrp_markets.parquet"
+            },
+            {
+              "split": "doge",
+              "path": "doge_markets.parquet"
+            },
+            {
+              "split": "hype",
+              "path": "hype_markets.parquet"
+            },
+            {
+              "split": "bnb",
+              "path": "bnb_markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "btc",
+              "path": "btc_ticks.parquet"
+            },
+            {
+              "split": "eth",
+              "path": "eth_ticks.parquet"
+            },
+            {
+              "split": "sol",
+              "path": "sol_ticks.parquet"
+            },
+            {
+              "split": "xrp",
+              "path": "xrp_ticks.parquet"
+            },
+            {
+              "split": "doge",
+              "path": "doge_ticks.parquet"
+            },
+            {
+              "split": "hype",
+              "path": "hype_ticks.parquet"
+            },
+            {
+              "split": "bnb",
+              "path": "bnb_ticks.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-06-17T16:38:13.000Z",
+    "likes": 20,
+    "private": false,
+    "sha": "42d917dc8e3205dde8ac909792af0cce2d715c9f",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket 5-Minute Crypto Up/Down Markets\n\t\n\nSecond-by-second top-of-book order-book recordings of Polymarket's recurring 5-minute crypto up/down markets \u2014 bet on whether a coin closes a fixed 5-minute window higher or lower \u2014 for BTC, ETH, SOL, XRP, DOGE, HYPE and BNB.\n\n~89,000 markets (one resolved 5-minute window each)\n26,858,579 per-second observations (\u2248300 ticks per market)\nSpan: BTC 24 Mar 2026 \u2192 18 May 2026; the other six 5 Apr 2026 \u2192 18 May 2026 (UTC)\nCoverage 99.8%+, no\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/kachoio/polymarket-5-minute-crypto-up-down-markets.",
+    "downloads": 1884,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "license:cc0-1.0",
+      "size_categories:10M<n<100M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "finance",
+      "crypto",
+      "prediction-markets",
+      "polymarket",
+      "order-book",
+      "time-series"
+    ],
+    "createdAt": "2026-06-16T19:40:46.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a61e11674f2b4d19cecbf24",
+    "id": "wzsg/polymarket-orderfilled-v2",
+    "author": "wzsg",
+    "cardData": {
+      "pretty_name": "Polymarket CLOB V2 OrderFilled (Polygon)",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "tags": [
+        "polymarket",
+        "polygon",
+        "blockchain",
+        "prediction-markets",
+        "parquet"
+      ],
+      "size_categories": [
+        "100M<n<1B"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "event_month=*/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-04T00:10:42.000Z",
+    "likes": 3,
+    "private": false,
+    "sha": "f8782fc0c18a4e32b7bdc348ada114e5007a4367",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket CLOB V2 OrderFilled (Polygon)\n\t\n\n\u4e2d\u6587\u8bf4\u660e \u00b7 CLOB V1 dataset\n \n  \nThis dataset contains OrderFilled events emitted by Polymarket CLOB V2 Exchange contracts on Polygon mainnet. It covers both standard CTF markets and Neg Risk markets, follows the V2 event ABI, and is stored as ZSTD-compressed Parquet files partitioned by UTC month.\nExplore V1 and V2 activity, trends, and summary metrics in the interactive live analytics dashboard.\nThe collection, processing, and dashboard\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/wzsg/polymarket-orderfilled-v2.",
+    "downloads": 1720,
+    "tags": [
+      "language:en",
+      "language:zh",
+      "size_categories:100M<n<1B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "polygon",
+      "blockchain",
+      "prediction-markets",
+      "parquet"
+    ],
+    "createdAt": "2026-07-23T09:38:30.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a00ac499d8f873683184ac1",
+    "id": "trentmkelly/polymarket_crypto_derivatives",
+    "author": "trentmkelly",
+    "cardData": {
+      "license": "cc-by-sa-4.0",
+      "task_categories": [
+        "tabular-classification",
+        "time-series-forecasting"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "market-data",
+        "order-book",
+        "parquet",
+        "zstd"
+      ],
+      "pretty_name": "Polymarket Crypto Derivatives Order Book Data"
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-05-12T21:50:15.000Z",
+    "likes": 8,
+    "private": false,
+    "sha": "6be20463ce33795178c121e7bd15ed428904b5bd",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Derivatives Order Book Data\n\t\n\nThis dataset contains high-frequency Polymarket crypto \"Up or Down\" derivative market data for BTC, ETH, SOL, and XRP markets.\nThe collection currently spans 2026-02-21 15:45:00 UTC through 2026-03-24 20:05:00 UTC. It covers 5-minute and 15-minute Polymarket interval markets, with decision snapshots collected at approximately 100 ms cadence.\n\n\t\n\t\t\n\t\tFormat\n\t\n\nData is uploaded as Zstandard-compressed Parquet, converted from the project's\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/trentmkelly/polymarket_crypto_derivatives.",
+    "downloads": 1704,
+    "tags": [
+      "task_categories:tabular-classification",
+      "task_categories:time-series-forecasting",
+      "language:en",
+      "license:cc-by-sa-4.0",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "market-data",
+      "order-book",
+      "parquet",
+      "zstd"
+    ],
+    "createdAt": "2026-05-10T16:03:21.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a80a7371be42af8481c16b4",
+    "id": "DineshKumar8399/polymarket-orderbook-dataset",
+    "author": "DineshKumar8399",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket Order Book Snapshots",
+      "size_categories": [
+        "100M<n<1B"
+      ],
+      "tags": [
+        "prediction-markets",
+        "order-book",
+        "finance",
+        "time-series",
+        "forecasting"
+      ],
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "configs": [
+        {
+          "config_name": "quotes",
+          "default": true,
+          "data_files": [
+            {
+              "split": "train",
+              "path": "quotes/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "labels",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "labels.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "watch_quotes",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "watch_quotes.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "data_quality",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data_quality.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-13T16:36:16.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "3030329b2a7a58fdf93c9b2aa3c68a0848d63137",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Order Book Dataset\n\t\n\nOrder-book snapshots from a prediction market, collected continuously between\n2026-07-10 and 2026-09-13: 484,045,253 quote observations across\n314,123 markets, plus settlement outcomes and a separate high-frequency feed\nthat records actual traded prices.\nIt is published so other people can build and train on it without first spending\na month running collectors. Everything here is an independent observational\nrecording of publicly displayed market\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/DineshKumar8399/polymarket-orderbook-dataset.",
+    "downloads": 1690,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "license:cc-by-4.0",
+      "size_categories:100M<n<1B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "prediction-markets",
+      "order-book",
+      "finance",
+      "time-series",
+      "forecasting"
+    ],
+    "createdAt": "2026-08-15T17:51:51.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69e92316f1473ce6f9bfbfce",
+    "id": "od2961/polymarket-full-market-dataset",
+    "author": "od2961",
+    "cardData": {
+      "pretty_name": "Polymarket Full Market Dataset",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "prediction-markets",
+        "polymarket",
+        "forecasting",
+        "time-series",
+        "finance",
+        "market-data"
+      ],
+      "size_categories": [
+        "1M<n<10M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-07-13T02:02:50.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "c0da83db933d371943911fe57b0a9526ec161d9d",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Full Market Dataset\n\t\n\nA complete, point-in-time archive of Polymarket: every event and market served by\nPolymarket's public Gamma API \u2014 from the platform's launch in 2020 through the snapshot\ndate \u2014 with final resolution outcomes, full metadata (questions, rules, tags, timing,\norder-book flags), and dense daily OHLC price candles for every outcome token,\nassembled from the CLOB price-history API.\nOne snapshot = one self-contained JSON file. One row = one market, with\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/od2961/polymarket-full-market-dataset.",
+    "downloads": 1119,
+    "tags": [
+      "language:en",
+      "size_categories:1M<n<10M",
+      "region:us",
+      "prediction-markets",
+      "polymarket",
+      "forecasting",
+      "time-series",
+      "finance",
+      "market-data"
+    ],
+    "createdAt": "2026-04-22T19:35:50.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69a4a3a18d13bda9953dbe6f",
+    "id": "obadiaha/polymarket-crypto-5m-15m",
+    "author": "obadiaha",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-03-24T12:51:37.000Z",
+    "likes": 3,
+    "private": false,
+    "sha": "11793901f0ac89c5a6c51123a6ccd29a3aaf8f4c",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-24 12:51 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n5,327,757\n2026-01-09\n2026-03-19\n\n\ntrades\n37,103,888\n2026-01-27\n2026-03-19\n\n\nprice_history\n587,188\n2026-03-06\n2026-03-19\n\n\ncrypto_prices\n72,088\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/obadiaha/polymarket-crypto-5m-15m.",
+    "downloads": 825,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-03-01T20:37:53.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69d9798ffe8a470aa17d7c4f",
+    "id": "BrockMisner/polymarket-btc-updown",
+    "author": "BrockMisner",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-10T22:28:32.000Z",
+    "likes": 12,
+    "private": false,
+    "sha": "c0209a1f9930caf677648479b84b62ea3a6864b5",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/BrockMisner/polymarket-btc-updown.",
+    "downloads": 615,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-04-10T22:28:31.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa5a1cd94b27a66977d155e",
+    "id": "whodisidk/polymarket-eth-updown-exchange-data",
+    "author": "whodisidk",
+    "cardData": {
+      "viewer": false,
+      "tags": [
+        "polymarket",
+        "eth",
+        "up",
+        "down",
+        "prediction-markets",
+        "historical-market-data",
+        "binance",
+        "hyperliquid",
+        "timeseries",
+        "5m",
+        "15m",
+        "1h"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-12T20:10:42.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "6c30423f2a2655741bbd21ba00cca34ff8de02bf",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket ETH Up/Down historical market and exchange data\n\t\n\nSelected inclusive UTC date range: 2026-06-09 through 2026-08-29. Market horizons: 5m / 15m / 1h.\n62 daily archives. Not every date in this range is included. See MANIFEST.txt for the included dates and file sizes.\nHistorical data for Polymarket ETH Up/Down markets, alongside Binance ETHUSDT and Hyperliquid ETH/USDC observations: order-book snapshots, market features, captured trades, lifecycle information and available\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/whodisidk/polymarket-eth-updown-exchange-data.",
+    "downloads": 532,
+    "tags": [
+      "modality:timeseries",
+      "region:us",
+      "polymarket",
+      "eth",
+      "up",
+      "down",
+      "prediction-markets",
+      "historical-market-data",
+      "binance",
+      "hyperliquid",
+      "timeseries",
+      "5m",
+      "15m",
+      "1h"
+    ],
+    "createdAt": "2026-09-12T19:02:37.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a8dccae72b1984c23038d7c",
+    "id": "polyorderbooks/polymarket-crypto-updown-orderbooks-l2",
+    "author": "polyorderbooks",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket Crypto Up/Down Order Books \u2014 1-Second L2, Three Contract Lengths",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-regression"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "order-book",
+        "order-books",
+        "limit-order-book",
+        "market-microstructure",
+        "high-frequency",
+        "crypto",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp",
+        "dogecoin",
+        "backtesting",
+        "slippage"
+      ],
+      "size_categories": [
+        "100K<n<1M"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-25T17:12:56.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "e71568052763479136bd1217a22021cef36be187",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Crypto Up/Down Order Books \u2014 1-Second L2 Depth\n\t\n\n897,192 order book snapshots across 805 resolved markets and three contract\nlengths. Full bid and ask ladders, captured once per second, with the winning\noutcome on every row.\nThis is the DOI-carrying research release. Same data as\n10.5281/zenodo.22084114, mirrored here\nfor load_dataset.\n\n\t\n\t\t\n\t\n\t\n\t\tWhat is in it\n\t\n\n\n\t\n\t\t\nFile\nSnapshots\nMarkets\nContract\n\n\n\t\t\nupdown_5m.parquet\n167,941\n471\nFive-minute\n\n\nupdown_15m.parquet\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/polyorderbooks/polymarket-crypto-updown-orderbooks-l2.",
+    "downloads": 486,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-regression",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:100K<n<1M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "order-book",
+      "order-books",
+      "limit-order-book",
+      "market-microstructure",
+      "high-frequency",
+      "crypto",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp",
+      "dogecoin",
+      "backtesting",
+      "slippage"
+    ],
+    "createdAt": "2026-08-25T17:11:10.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69b8ee1d30eb72a0f30cef6c",
+    "id": "BrockMisner/polymarket-crypto-5m-15m",
+    "author": "BrockMisner",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-03-17T06:01:02.000Z",
+    "likes": 7,
+    "private": false,
+    "sha": "67fa86329db6758f5068b15e2cc53abf19ee339f",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-13 01:55 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n3,415,267\n2026-01-09\n2026-03-13\n\n\ntrades\n23,241,033\n2026-01-27\n2026-03-13\n\n\nprice_history\n304,340\n2026-03-06\n2026-03-13\n\n\ncrypto_prices\n37,480\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/BrockMisner/polymarket-crypto-5m-15m.",
+    "downloads": 482,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-03-17T06:01:01.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a6b4d02057d78ddbf3fb2a4",
+    "id": "lokima/polymarket-btc-eth-5m-updown-8h",
+    "author": "lokima",
+    "cardData": {
+      "license": "odc-by",
+      "pretty_name": "Polymarket BTC/ETH 5-Minute Up-Down \u2014 Full-Depth Microstructure Capture (8h)",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "finance",
+        "cryptocurrency",
+        "prediction-markets",
+        "market-microstructure",
+        "high-frequency",
+        "limit-order-book",
+        "order-flow",
+        "polymarket",
+        "bitcoin",
+        "ethereum",
+        "binary-options",
+        "event-driven"
+      ],
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "labels",
+          "default": true,
+          "data_files": [
+            {
+              "split": "train",
+              "path": "labels/labels.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "clob_ws",
+          "data_files": [
+            {
+              "split": "btc",
+              "path": "data/clob_ws/btc/*/poly_*.parquet"
+            },
+            {
+              "split": "eth",
+              "path": "data/clob_ws/eth/*/poly_*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "clob_rest",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/clob_rest/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "trades",
+          "data_files": [
+            {
+              "split": "live",
+              "path": "data/trades/trades_live.parquet"
+            },
+            {
+              "split": "final",
+              "path": "data/trades/trades_final.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "reference",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/reference/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "venue",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/venue/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-07-30T13:10:04.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "97d05eac7324a410db4dabb4f06b25cc21aae23f",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC/ETH 5-Minute Up/Down \u2014 Full-Depth Microstructure Capture (8h)\n\t\n\nA tick-level, nanosecond-timestamped capture of 96 consecutive Polymarket 5-minute\nbinary up/down windows on both BTC and ETH, together with every venue feed needed to\nmodel them: the Chainlink settlement oracle, Coinbase, Binance spot and Binance futures.\n52,007,792 events. 8 hours. 192 labelled symbol-windows. Zero dropped records.\n\n\t\n\t\t\n\n\n\n\n\t\t\nCoverage\n2026-07-29T20:40:00Z \u2192 2026-07-30T04:40:00Z (8h\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/lokima/polymarket-btc-eth-5m-updown-8h.",
+    "downloads": 448,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:odc-by",
+      "size_categories:10M<n<100M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "finance",
+      "cryptocurrency",
+      "prediction-markets",
+      "market-microstructure",
+      "high-frequency",
+      "limit-order-book",
+      "order-flow",
+      "polymarket",
+      "bitcoin",
+      "ethereum",
+      "binary-options",
+      "event-driven"
+    ],
+    "createdAt": "2026-07-30T13:09:22.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a8b01276e02412fb4a17541",
+    "id": "polyorderbooks/polymarket-crypto-5min-l2",
+    "author": "polyorderbooks",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket Crypto Order Books \u2014 1-Second L2 Depth",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-regression"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "order-book",
+        "order-books",
+        "limit-order-book",
+        "market-microstructure",
+        "high-frequency",
+        "crypto",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp",
+        "dogecoin",
+        "backtesting"
+      ],
+      "size_categories": [
+        "100K<n<1M"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-25T17:04:52.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "2e74c05ab8c0f5cc5379ca934c2abef857ef2a62",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Crypto 5-Minute Markets \u2014 1-Second L2 Order Books\n\t\n\nFull bid and ask ladders, captured once per second, for Polymarket's five-minute\ncrypto up/down markets. Every market in here has already resolved, so each row\ncarries the winning outcome.\nThe interesting part of these markets is the last few minutes, so that is what\nthis covers: the window from market open to settlement, for both outcome tokens.\n\n\t\n\t\t\n\t\n\t\n\t\tHow this differs from other Polymarket datasets\n\t\n\nSeveral\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/polyorderbooks/polymarket-crypto-5min-l2.",
+    "downloads": 443,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-regression",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:100K<n<1M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "order-book",
+      "order-books",
+      "limit-order-book",
+      "market-microstructure",
+      "high-frequency",
+      "crypto",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp",
+      "dogecoin",
+      "backtesting"
+    ],
+    "createdAt": "2026-08-23T14:18:15.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a7ee95048e0c487465697e6",
+    "id": "marketlens/polymarket-btc-5m-l2-depth",
+    "author": "marketlens",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket BTC 5m L2 Order Book, One Full Day",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "order-book",
+        "limit-order-book",
+        "market-microstructure",
+        "event-contracts",
+        "backtesting",
+        "bitcoin",
+        "finance"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "snapshots",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "snapshots.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "deltas",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "deltas.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "trades",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "trades.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-17T10:48:36.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "e4856cdda097e0897d66f0d383e1940f91309d97",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC 5m L2 Order Book, One Full Day\n\t\n\nEvery \"Bitcoin Up or Down\" 5 minute market on Polymarket for 2026-06-15 UTC, with\nthe full limit order book behind each one: 288 markets, 3,889 book snapshots,\n41,591,670 level updates and 680,994 trades, on one millisecond time base.\nPolymarket's public API serves the book as it is now. There is no endpoint that\nreturns the book as it was, so past depth is something you have to have been\nrecording while the market was live. This is\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/marketlens/polymarket-btc-5m-l2-depth.",
+    "downloads": 348,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:10M<n<100M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "order-book",
+      "limit-order-book",
+      "market-microstructure",
+      "event-contracts",
+      "backtesting",
+      "bitcoin",
+      "finance"
+    ],
+    "createdAt": "2026-08-14T10:09:20.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa408b23eaa602a16691c95",
+    "id": "whodisidk/polymarket-eth-updown-market-data",
+    "author": "whodisidk",
+    "cardData": {
+      "viewer": false,
+      "tags": [
+        "polymarket",
+        "eth",
+        "up",
+        "down",
+        "prediction-markets",
+        "historical-market-data"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-12T15:27:29.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "204cd0b42e696ba6f6acf73d35bc850166124120",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket ETH Up/Down historical market data\n\t\n\nSelected inclusive UTC dates: 2026-03-27 through 2026-06-08; 74 daily archives. Market horizons: 5m / 15m / 1h.\nHistorical third-party data for Polymarket ETH Up/Down markets: order-book snapshots, oracle prices, and derived lifecycle and outcome tables. Market accuracy has not been independently verified.\nThe daily UTC archives contain Parquet files under dataset=<table>/date=YYYY-MM-DD/. Member filenames use\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/whodisidk/polymarket-eth-updown-market-data.",
+    "downloads": 329,
+    "tags": [
+      "region:us",
+      "polymarket",
+      "eth",
+      "up",
+      "down",
+      "prediction-markets",
+      "historical-market-data"
+    ],
+    "createdAt": "2026-09-11T13:57:06.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa4089a28eb6c14fb5c264b",
+    "id": "whodisidk/polymarket-btc-updown-market-data",
+    "author": "whodisidk",
+    "cardData": {
+      "viewer": false,
+      "tags": [
+        "polymarket",
+        "btc",
+        "up",
+        "down",
+        "prediction-markets",
+        "historical-market-data"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-12T15:27:27.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "67ad49624b4f57fa916bea35cc029e72fb925738",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC Up/Down historical market data\n\t\n\nSelected inclusive UTC dates: 2026-03-27 through 2026-05-24; 59 daily archives. Market horizons: 5m / 15m / 1h / 4h.\nHistorical third-party data for Polymarket BTC Up/Down markets: order-book snapshots, oracle prices, and derived lifecycle and outcome tables. Market accuracy has not been independently verified.\nThe daily UTC archives contain Parquet files under dataset=<table>/date=YYYY-MM-DD/. Member filenames use\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/whodisidk/polymarket-btc-updown-market-data.",
+    "downloads": 284,
+    "tags": [
+      "region:us",
+      "polymarket",
+      "btc",
+      "up",
+      "down",
+      "prediction-markets",
+      "historical-market-data"
+    ],
+    "createdAt": "2026-09-11T13:56:42.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a3c28863f052ba9649232c5",
+    "id": "kinzikdza/polymarket-updown-microstructure",
+    "author": "kinzikdza",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "finance",
+        "prediction-markets",
+        "microstructure",
+        "polymarket",
+        "order-book",
+        "adverse-selection"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Microstructure (5m/15m)",
+      "size_categories": [
+        "1M<n<10M"
+      ],
+      "configs": [
+        {
+          "config_name": "slots",
+          "data_files": "parquet/slots.parquet"
+        },
+        {
+          "config_name": "book_snapshots",
+          "data_files": "parquet/book_snapshots.parquet"
+        },
+        {
+          "config_name": "pm_trades",
+          "data_files": "parquet/pm_trades.parquet"
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-06-25T23:21:12.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "eb4e9fc794c059dd9bef69c98eb4d34e70a5bd83",
+    "description": "\nFormat. Three tables are published as parquet (under parquet/) for\nthe Hub viewer and pandas/polars/datasets users \u2014 pick a table from the\nconfig dropdown above. The\nhonest-backtest loader\nreads this parquet/ directory directly via its parquet adapter\n(adapters.parquet_pm.load_corpus) for one-command reproduction of the\npaper's results \u2014 see Reproduce the headline result below.\n\n\n\t\n\t\t\n\t\n\t\n\t\tDataset card \u2014 Polymarket crypto up/down microstructure (5m/15m)\n\t\n\nSix weeks of real order-book\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/kinzikdza/polymarket-updown-microstructure.",
+    "downloads": 238,
+    "tags": [
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "finance",
+      "prediction-markets",
+      "microstructure",
+      "polymarket",
+      "order-book",
+      "adverse-selection"
+    ],
+    "createdAt": "2026-06-24T18:57:10.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a12d30c904f0487f6219d7a",
+    "id": "Solal9/polymarket-crypto-updown-binary",
+    "author": "Solal9",
+    "cardData": {
+      "language": [
+        "en"
+      ],
+      "license": "cc-by-4.0",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "prediction-markets",
+        "polymarket",
+        "cryptocurrency",
+        "bitcoin",
+        "ethereum",
+        "binary-options",
+        "finance",
+        "market-microstructure"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Binary Markets by Kresmion.com",
+      "size_categories": [
+        "1M<n<10M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-05-24T11:01:12.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "c17800caa413042941bbd8a9f266b23b6f5f8ed4",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Binary Markets\n\t\n\nHistorical orderbook and market snapshot data from Polymarket's short-duration binary \"Up or Down\" prediction markets for BTC, ETH, SOL, and XRP. Collected continuously over approximately two months at 60-second polling intervals.\nThis dataset captures something genuinely uncommon in publicly available crypto data: minute-resolution implied probabilities for 5-minute, 15-minute, hourly, and daily directional outcomes, with full top-of-book\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Solal9/polymarket-crypto-updown-binary.",
+    "downloads": 224,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:1M<n<10M",
+      "region:us",
+      "prediction-markets",
+      "polymarket",
+      "cryptocurrency",
+      "bitcoin",
+      "ethereum",
+      "binary-options",
+      "finance",
+      "market-microstructure"
+    ],
+    "createdAt": "2026-05-24T10:29:32.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69f35fc87e6c40eaabb018c0",
+    "id": "Mindbyte-89/polymarket-btc-updown",
+    "author": "Mindbyte-89",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-30T13:57:28.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "424283218ec7e3b7ae73e241356016c7e1d80542",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Mindbyte-89/polymarket-btc-updown.",
+    "downloads": 206,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-04-30T13:57:28.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a276037ff7486bb4f5b37a0",
+    "id": "yamalalaxman/polymarket-btc-trades",
+    "author": "yamalalaxman",
+    "cardData": {
+      "configs": [
+        {
+          "config_name": "5m",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "trades_sample.parquet"
+            }
+          ],
+          "default": true
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-06-19T03:08:25.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "85a2a85c719e8b1d0c975d95900c70334d1991c6",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC Trade Dataset \u2014 5-Minute Windows\n\t\n\n\nHFT-grade on-chain trade data for Polymarket \"BTC above/below\" binary option markets.\nCovers March 1 \u2013 June 8, 2026: 99 days, ~217M trades, 49.5K parquet files.\n\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Structure\n\t\n\nby_window/\n\u251c\u2500\u2500 YYYY-MM-DD/\n\u2502   \u251c\u2500\u2500 5m/\n\u2502   \u2502   \u251c\u2500\u2500 WINDOW_TIMESTAMP/\n\u2502   \u2502   \u2502   \u251c\u2500\u2500 trades.parquet      # All trades for this 5-minute window\n\u2502   \u2502   \u2502   \u2514\u2500\u2500 metadata.json       # Window metadata (slug, prices, volume)\n\u2502   \u2502   \u2514\u2500\u2500 ...\n\u2502\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/yamalalaxman/polymarket-btc-trades.",
+    "downloads": 163,
+    "tags": [
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-06-09T00:37:11.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a884b15bb63a7baeb8cc9d1",
+    "id": "kartikbathla/polymarket-crypto-up-down-5min-15min-market-orderbook-l2-data",
+    "author": "kartikbathla",
+    "cardData": {
+      "pretty_name": "Polymarket Crypto Up/Down 5-Min & 15-Min Market Orderbook L2 Data",
+      "license": "other",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-regression"
+      ],
+      "size_categories": [
+        "n<1K"
+      ],
+      "configs": [
+        {
+          "config_name": "market_index",
+          "default": true,
+          "data_files": [
+            {
+              "split": "train",
+              "path": "metadata/episode_index.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "top10_5m",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "top10_parquet/*/*/5m/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "top10_15m",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "top10_parquet/*/*/15m/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-22T11:56:35.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "3e44f78218d5bd0b41e0fbcc69384babef388b37",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Crypto Up/Down 5-Min & 15-Min Market Orderbook L2 Data\n\t\n\nThis dataset is a public one-day sample from a larger high-resolution Polymarket crypto prediction market data warehouse built for quant research.\nIt contains synchronized order book captures, matching trade tapes, and research-ready top-10 bid/ask exports across major crypto-linked up/down markets.\n\n\t\n\t\t\n\t\n\t\n\t\tWhat\u2019s Included\n\t\n\n\nRaw per-episode order book captures in episodes/\nMatching trade tapes in trades/\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/kartikbathla/polymarket-crypto-up-down-5min-15min-market-orderbook-l2-data.",
+    "downloads": 161,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-regression",
+      "license:other",
+      "size_categories:10M<n<100M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-08-21T12:56:53.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa5a1cd5742475f977fb38f",
+    "id": "whodisidk/polymarket-sol-updown-exchange-data",
+    "author": "whodisidk",
+    "cardData": {
+      "viewer": false,
+      "tags": [
+        "polymarket",
+        "sol",
+        "up",
+        "down",
+        "prediction-markets",
+        "historical-market-data",
+        "binance",
+        "hyperliquid",
+        "timeseries",
+        "5m",
+        "15m",
+        "1h"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-12T19:52:13.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "f0b4d0de98132e82f23d9d965623897c3fab6f92",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket SOL Up/Down historical market and exchange data\n\t\n\nSelected inclusive UTC date range: 2026-06-09 through 2026-08-29. Market horizons: 5m / 15m / 1h.\n41 daily archives. Not every date in this range is included. See MANIFEST.txt for the included dates and file sizes.\nHistorical data for Polymarket SOL Up/Down markets, alongside Binance SOLUSDT and Hyperliquid SOL/USDC observations: order-book snapshots, market features, captured trades, lifecycle information and available\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/whodisidk/polymarket-sol-updown-exchange-data.",
+    "downloads": 159,
+    "tags": [
+      "modality:timeseries",
+      "region:us",
+      "polymarket",
+      "sol",
+      "up",
+      "down",
+      "prediction-markets",
+      "historical-market-data",
+      "binance",
+      "hyperliquid",
+      "timeseries",
+      "5m",
+      "15m",
+      "1h"
+    ],
+    "createdAt": "2026-09-12T19:02:37.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69b3fbe15239de7ae4ac6d82",
+    "id": "bmoney1321/polymarket-crypto-5m-15m",
+    "author": "bmoney1321",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-03-13T11:58:26.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "511752d5ebe9380626c90d3eac7d3643c1a0b5e7",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-13 01:55 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n3,415,267\n2026-01-09\n2026-03-13\n\n\ntrades\n23,241,033\n2026-01-27\n2026-03-13\n\n\nprice_history\n304,340\n2026-03-06\n2026-03-13\n\n\ncrypto_prices\n37,480\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/bmoney1321/polymarket-crypto-5m-15m.",
+    "downloads": 151,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-03-13T11:58:25.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69e80e06995746ae7de3857b",
+    "id": "mingossx/polymarket-crypto-5m-15m",
+    "author": "mingossx",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-21T23:53:42.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "a4793f7ca1ae1a15a6c9a43a499a1b8768fed7b0",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-24 12:51 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n5,327,757\n2026-01-09\n2026-03-19\n\n\ntrades\n37,103,888\n2026-01-27\n2026-03-19\n\n\nprice_history\n587,188\n2026-03-06\n2026-03-19\n\n\ncrypto_prices\n72,088\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/mingossx/polymarket-crypto-5m-15m.",
+    "downloads": 141,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-04-21T23:53:42.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa408b40ba6502850d2e8f3",
+    "id": "whodisidk/polymarket-sol-updown-market-data",
+    "author": "whodisidk",
+    "cardData": {
+      "viewer": false,
+      "tags": [
+        "polymarket",
+        "sol",
+        "up",
+        "down",
+        "prediction-markets",
+        "historical-market-data"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-12T15:27:31.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "2d5395ba583a0bb97254fb7eee99a73dbf19b125",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket SOL Up/Down historical market data\n\t\n\nSelected inclusive UTC dates: 2026-03-28 through 2026-06-08; 73 daily archives. Market horizons: 5m / 15m / 1h.\nHistorical third-party data for Polymarket SOL Up/Down markets: order-book snapshots, oracle prices, and derived lifecycle and outcome tables. Market accuracy has not been independently verified.\nThe daily UTC archives contain Parquet files under dataset=<table>/date=YYYY-MM-DD/. Member filenames use\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/whodisidk/polymarket-sol-updown-market-data.",
+    "downloads": 125,
+    "tags": [
+      "region:us",
+      "polymarket",
+      "sol",
+      "up",
+      "down",
+      "prediction-markets",
+      "historical-market-data"
+    ],
+    "createdAt": "2026-09-11T13:57:08.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69e80ae5823d5daaa51e27e0",
+    "id": "mingossx/polymarket-crypto-updown",
+    "author": "mingossx",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-21T23:40:21.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "8315b0adefbf8340de6ca6cf0fbc7b75663373da",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/mingossx/polymarket-crypto-updown.",
+    "downloads": 120,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-04-21T23:40:21.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a7dbc8477a47563c9263fe6",
+    "id": "dvegenen883/polymarket-btc-updown-btc-chainlink",
+    "author": "dvegenen883",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-13T12:45:57.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "69ddf2b01b46b99ef94e9ebe4d359a102ffbab32",
+    "downloads": 116,
+    "tags": [
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-08-13T12:45:56.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69de20a9824be63b4b2c2073",
+    "id": "Radim462/polymarket-crypto-5m-15m",
+    "author": "Radim462",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-14T11:10:34.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "52c19b707f8ca076089d2ec4dce05f197097d2d4",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-13 01:55 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n3,415,267\n2026-01-09\n2026-03-13\n\n\ntrades\n23,241,033\n2026-01-27\n2026-03-13\n\n\nprice_history\n304,340\n2026-03-06\n2026-03-13\n\n\ncrypto_prices\n37,480\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Radim462/polymarket-crypto-5m-15m.",
+    "downloads": 114,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-04-14T11:10:33.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6aa0bd529e3ec9572570b399",
+    "id": "THULab/polymarket_crypto_5m_15m",
+    "author": "THULab",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "tsfile",
+        "timeseries",
+        "time-series",
+        "format:tsfile"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "1M<n<10M"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "crypto_prices_1.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_2.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_3.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_4.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_5.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_6.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_7.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "crypto_prices_8.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_1.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_2.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_3.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_4.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_5.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_6.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_7.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "markets_8.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_1.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_2.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_3.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_4.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_5.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_6.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_7.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_8.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "orderbooks_9.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_1.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_2.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_3.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_4.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_5.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_6.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_7.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_8.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "price_history_9.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_1.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_2.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_3.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_4.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_5.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_6.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_7.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_8.tsfile"
+            },
+            {
+              "split": "train",
+              "path": "resolutions_9.tsfile"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-09T02:55:38.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "73cad91769860b0f86ad11fb31c1e804a72a83b1",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Crypto 5m/15m Market Data (TsFile)\n\t\n\nApache TsFile version of bmoney1321/polymarket-crypto-5m-15m.\n\nConverted rows: 3,792,347\nData files: ['crypto_prices_1.tsfile', 'crypto_prices_2.tsfile', 'crypto_prices_3.tsfile', 'crypto_prices_4.tsfile', 'crypto_prices_5.tsfile', 'crypto_prices_6.tsfile', 'crypto_prices_7.tsfile', 'crypto_prices_8.tsfile', 'markets_1.tsfile', 'markets_2.tsfile', 'markets_3.tsfile', 'markets_4.tsfile', 'markets_5.tsfile', 'markets_6.tsfile'\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/THULab/polymarket_crypto_5m_15m.",
+    "downloads": 113,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:1M<n<10M",
+      "modality:timeseries",
+      "region:us",
+      "tsfile",
+      "timeseries",
+      "time-series",
+      "format:tsfile"
+    ],
+    "createdAt": "2026-09-09T01:58:42.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69e80af8a01b977064d3a4d1",
+    "id": "mingossx/polymarket-btc-updown",
+    "author": "mingossx",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-21T23:40:41.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "81b1e9b58d65942843d9cfa604b19f4a337a7dc1",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/mingossx/polymarket-btc-updown.",
+    "downloads": 98,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-04-21T23:40:40.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a86ebab1f3c7bd08d87175f",
+    "id": "polyorderbooks/polymarket-crypto-5min-orderbooks",
+    "author": "polyorderbooks",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket Crypto 5-Minute L2 Order Books",
+      "size_categories": [
+        "1K<n<10K"
+      ],
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-regression"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "order-book",
+        "limit-order-book",
+        "market-microstructure",
+        "historical-data",
+        "backtesting",
+        "crypto",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp",
+        "dogecoin",
+        "order-books",
+        "high-frequency"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "polymarket_crypto_5min_l2.jsonl"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-25T17:04:53.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "c62c4c1874403098479157fe54c27c7df040871d",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Crypto 5-Minute L2 Order Books\n\t\n\nFull level-2 order book snapshots at 1-second resolution for 15 complete Polymarket\ncrypto up/down markets \u2014 every resting bid and ask, not just top of book.\nSeven assets: BTC, ETH, SOL, XRP, BNB, DOGE, HYPE. Each market is covered end to end\nacross its entire five-minute life, so it can be replayed rather than sampled.\nfrom datasets import load_dataset\n\nds = load_dataset(\"polyorderbooks/polymarket-crypto-5min-orderbooks\", split=\"train\")\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/polyorderbooks/polymarket-crypto-5min-orderbooks.",
+    "downloads": 84,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-regression",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:1K<n<10K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "order-book",
+      "limit-order-book",
+      "market-microstructure",
+      "historical-data",
+      "backtesting",
+      "crypto",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp",
+      "dogecoin",
+      "order-books",
+      "high-frequency"
+    ],
+    "createdAt": "2026-08-20T11:57:31.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69aeed95820cc4bc34345fb1",
+    "id": "heaouwtj/polymarket-crypto-5m-15m",
+    "author": "heaouwtj",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-03-09T15:56:05.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "0da7615776a2f91e8845bbe5b5a24f3fd0f52cb3",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-06 04:44 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n1,337,968\n2026-01-09\n2026-03-06\n\n\ntrades\n9,017,618\n2026-01-27\n2026-03-06\n\n\nprice_history\n312\n2026-03-06\n2026-03-06\n\n\ncrypto_prices\n272\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/heaouwtj/polymarket-crypto-5m-15m.",
+    "downloads": 83,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-03-09T15:56:05.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69d31e78a11c8adeff6e2cf9",
+    "id": "PolyData/polymarket_trade_capture_5Mar2026",
+    "author": "PolyData",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "task_categories": [
+        "tabular-classification",
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "blockchain",
+        "trading",
+        "orderbook"
+      ],
+      "size_categories": [
+        "1B<n<10B"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-06T02:50:11.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "804f6e173f6614710e9e91628f0a4897801047d2",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Trade Capture (through March 5, 2026)\n\t\n\nEvery filled order on Polymarket's CLOB (Central Limit Order Book) from launch through March 5, 2026. Sourced from on-chain events via the Goldsky indexer.\n\n\t\n\t\t\n\t\tOverview\n\t\n\n\n\t\n\t\t\nMetric\nValue\n\n\n\t\t\nDate range\n2022-11-21 to 2026-03-05\n\n\nPartitions\n1,194 days\n\n\nParquet files\n1,643\n\n\nSize on disk\n~21 GB\n\n\nEstimated total rows\n~1-2 billion\n\n\n\t\n\n\n\t\n\t\t\n\t\tSchema\n\t\n\n\n\t\n\t\t\nColumn\nType\nDescription\n\n\n\t\t\ntimestamp\nint64\nUnix timestamp (seconds)\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/PolyData/polymarket_trade_capture_5Mar2026.",
+    "downloads": 80,
+    "tags": [
+      "task_categories:tabular-classification",
+      "task_categories:time-series-forecasting",
+      "license:cc-by-4.0",
+      "size_categories:100M<n<1B",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "blockchain",
+      "trading",
+      "orderbook"
+    ],
+    "createdAt": "2026-04-06T02:46:16.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69d50b3647e502cf766dd6b5",
+    "id": "notkali/polymarket-crypto-5m-15m",
+    "author": "notkali",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-07T13:48:39.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "31434879c885b7e39a6ea93f7d7b54d1ec28c2d7",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-13 01:55 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n3,415,267\n2026-01-09\n2026-03-13\n\n\ntrades\n23,241,033\n2026-01-27\n2026-03-13\n\n\nprice_history\n304,340\n2026-03-06\n2026-03-13\n\n\ncrypto_prices\n37,480\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/notkali/polymarket-crypto-5m-15m.",
+    "downloads": 71,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-04-07T13:48:38.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a83134eded99929f0443253",
+    "id": "polyorderbooks/polymarket-btc-5min-historical-l2",
+    "author": "polyorderbooks",
+    "cardData": {
+      "license": "cc-by-4.0",
+      "pretty_name": "Polymarket BTC 5-Minute Historical L2 Order Books",
+      "size_categories": [
+        "n<1K"
+      ],
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-regression"
+      ],
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "historical-data",
+        "order-book",
+        "l2",
+        "market-microstructure",
+        "bitcoin",
+        "backtesting",
+        "limit-order-book",
+        "order-books",
+        "high-frequency"
+      ],
+      "configs": [
+        {
+          "config_name": "default",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "polymarket_btc_5min_l2.jsonl"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-08-25T17:04:52.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "25d091ea919f44c479f6eb1871a2062d64a779ca",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC 5-Minute Historical L2 Order Books\n\t\n\nFull level-2 order book snapshots captured at 1-second resolution for one resolved\nPolymarket BTC 5-minute up/down market \u2014 every resting bid and ask, not just top-of-book.\nOne row per (timestamp, outcome). 600 rows covering 300 seconds across both outcomes.\nfrom datasets import load_dataset\n\nds = load_dataset(\"polyorderbooks/polymarket-btc-5min-historical-l2\", split=\"train\")\nrow = ds[0]\n\nprint(row[\"timestamp\"], row[\"outcome\"])\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/polyorderbooks/polymarket-btc-5min-historical-l2.",
+    "downloads": 65,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-regression",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:n<1K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "historical-data",
+      "order-book",
+      "l2",
+      "market-microstructure",
+      "bitcoin",
+      "backtesting",
+      "limit-order-book",
+      "order-books",
+      "high-frequency"
+    ],
+    "createdAt": "2026-08-17T13:57:34.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a2622f05e3110b63adcdcb4",
+    "id": "krish301/polymarket-v2-btc-trades",
+    "author": "krish301",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-06-08T15:49:35.000Z",
+    "likes": 1,
+    "private": false,
+    "sha": "8b49a3a4d6e829454fa6ffc0d4b31a700c381e19",
+    "downloads": 55,
+    "tags": [
+      "region:us"
+    ],
+    "createdAt": "2026-06-08T02:03:28.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69f1ce45fbfc1a35cdfdc4c7",
+    "id": "ywf1112/polymarket-btc-updown",
+    "author": "ywf1112",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-29T09:24:22.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "67860c53bbe8c124557aa0027fd1fbc925bbb9e5",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/ywf1112/polymarket-btc-updown.",
+    "downloads": 52,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-04-29T09:24:21.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a26ad2843d4c2ecb4b1c310",
+    "id": "MAICHEN/polymarket-btc1h",
+    "author": "MAICHEN",
+    "cardData": {
+      "license": "mit"
+    },
+    "disabled": false,
+    "gated": "manual",
+    "lastModified": "2026-09-29T18:46:30.000Z",
+    "likes": 2,
+    "private": false,
+    "sha": "2b89fe40c5000ada6fcdfbecd6b4e753f4e01630",
+    "downloads": 52,
+    "tags": [
+      "license:mit",
+      "region:us"
+    ],
+    "createdAt": "2026-06-08T11:53:12.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a3e1181ecf2dd948f0ab6df",
+    "id": "MAICHEN/Polymarket-BTC-Above-L25",
+    "author": "MAICHEN",
+    "disabled": false,
+    "gated": "manual",
+    "lastModified": "2026-06-26T11:36:43.000Z",
+    "likes": 4,
+    "private": false,
+    "sha": "b4c686571dc0c34088daed8c3763d9aa5160bab4",
+    "downloads": 50,
+    "tags": [
+      "size_categories:100M<n<1B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-06-26T05:43:29.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a01ad19e98d869b78e6b78b",
+    "id": "Gb411/polymarket-crypto-5m-15m",
+    "author": "Gb411",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting"
+      ],
+      "tags": [
+        "polymarket",
+        "crypto",
+        "prediction-markets",
+        "order-books",
+        "trades",
+        "bitcoin",
+        "ethereum",
+        "solana",
+        "xrp"
+      ],
+      "pretty_name": "Polymarket Crypto 5m/15m Market Data",
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-05-11T10:19:06.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "3dc0ae1e898107c7ca3492d02bfdfa7dc7cc5fa4",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto 5-Minute & 15-Minute Market Data\n\t\n\nHigh-frequency data from Polymarket's crypto up/down prediction markets. Covers BTC, ETH, SOL, XRP across 5-minute and 15-minute windows.\nUpdated daily. All timestamps are UTC.\nLast updated: 2026-03-24 12:51 UTC\n\n\t\n\t\t\n\t\tData Summary\n\t\n\n\n\t\n\t\t\nDataset\nRows\nFirst Date\nLast Date\n\n\n\t\t\norderbooks\n5,327,757\n2026-01-09\n2026-03-19\n\n\ntrades\n37,103,888\n2026-01-27\n2026-03-19\n\n\nprice_history\n587,188\n2026-03-06\n2026-03-19\n\n\ncrypto_prices\n72,088\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Gb411/polymarket-crypto-5m-15m.",
+    "downloads": 50,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "license:mit",
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "modality:text",
+      "region:us",
+      "polymarket",
+      "crypto",
+      "prediction-markets",
+      "order-books",
+      "trades",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "xrp"
+    ],
+    "createdAt": "2026-05-11T10:19:05.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69f360b87b4bcaf13791a561",
+    "id": "Mindbyte-89/polymarket-btc-updown2",
+    "author": "Mindbyte-89",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-classification"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-markets",
+        "crypto",
+        "on-chain",
+        "orderbook",
+        "bitcoin",
+        "ethereum",
+        "defi",
+        "finance"
+      ],
+      "language": [
+        "en"
+      ],
+      "pretty_name": "Polymarket Crypto Up/Down Markets",
+      "size_categories": [
+        "10M<n<100M"
+      ],
+      "configs": [
+        {
+          "config_name": "markets",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/markets.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/prices/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "ticks",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/ticks/**/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "spot_prices",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/spot_prices/*.parquet"
+            }
+          ]
+        },
+        {
+          "config_name": "orderbook",
+          "data_files": [
+            {
+              "split": "train",
+              "path": "data/orderbook/**/*.parquet"
+            }
+          ]
+        }
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-04-30T14:01:28.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "a50f6f9d3a84815dee9f64c9915803a7f1f1b7a9",
+    "description": "\n\t\n\t\t\n\t\tPolymarket Crypto Up/Down Markets\n\t\n\nComprehensive dataset of Polymarket binary prediction markets for cryptocurrency price movements. Covers BTC, ETH, SOL, BNB, XRP, DOGE, and HYPE across multiple timeframes (5-minute, 15-minute, 1-hour, 4-hour).\nUpdated automatically every 3 hours.\n\n\t\n\t\t\n\t\tSubsets\n\t\n\nLoad a specific subset:\nfrom datasets import load_dataset\n\nmarkets = load_dataset(\"aliplayer1/polymarket-crypto-updown\", \"markets\")\nprices =\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Mindbyte-89/polymarket-btc-updown2.",
+    "downloads": 46,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-classification",
+      "language:en",
+      "license:mit",
+      "size_categories:1B<n<10B",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "prediction-markets",
+      "crypto",
+      "on-chain",
+      "orderbook",
+      "bitcoin",
+      "ethereum",
+      "defi",
+      "finance"
+    ],
+    "createdAt": "2026-04-30T14:01:28.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a20df6dde563092248baa2b",
+    "id": "krish301/polymarket-raw-5m",
+    "author": "krish301",
+    "cardData": {
+      "license": "mit",
+      "task_categories": [
+        "time-series-forecasting",
+        "tabular-regression"
+      ],
+      "tags": [
+        "polymarket",
+        "prediction-market",
+        "cryptocurrency",
+        "bitcoin",
+        "ethereum",
+        "on-chain",
+        "trade-data",
+        "orderbook"
+      ],
+      "size_categories": [
+        "100K<n<1M"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-06-04T02:14:43.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "03b64a031aab9bde7fbd9518be1023dd55004fc9",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket Raw Data \u2014 5m Up-or-Down Windows\n\t\n\nContinuous live collection of every single trade and orderbook tick on Polymarket's 5m Bitcoin/Ethereum/Solana/XRP/Dogecoin/BNB/Hype \"Up or Down\" prediction markets.\nThis dataset is built for institutional quantitative research. It captures complete user trade activity with every available metadata field from the Polymarket APIs, plus the full live orderbook at every resolution boundary.\n\n\t\n\t\t\n\t\n\t\n\t\tCoverage\n\t\n\n\nAssets: btc, eth, sol\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/krish301/polymarket-raw-5m.",
+    "downloads": 46,
+    "tags": [
+      "task_categories:time-series-forecasting",
+      "task_categories:tabular-regression",
+      "license:mit",
+      "size_categories:100K<n<1M",
+      "region:us",
+      "polymarket",
+      "prediction-market",
+      "cryptocurrency",
+      "bitcoin",
+      "ethereum",
+      "on-chain",
+      "trade-data",
+      "orderbook"
+    ],
+    "createdAt": "2026-06-04T02:14:05.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6a20e4a9c61731997f7dfcc0",
+    "id": "Alezanello/polymarket-5m-ml-data",
+    "author": "Alezanello",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-06-04T02:38:16.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "d1c631aeac46cb99e93f9bd8cd881da8a60d6cc4",
+    "downloads": 46,
+    "tags": [
+      "size_categories:10M<n<100M",
+      "modality:tabular",
+      "region:us"
+    ],
+    "createdAt": "2026-06-04T02:36:25.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6abcbcc7e0244831942e82a0",
+    "id": "Sigrex/polymarket_btc_up_down_1d_250314_260909",
+    "author": "Sigrex",
+    "cardData": {
+      "license": "mit",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "btc",
+        "1d"
+      ],
+      "pretty_name": "Polymarket BTC up/down 1d",
+      "size_categories": [
+        "n<1K"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-30T09:52:35.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "6dae02f5cbc4c7548a305311fed6c89421d46731",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC Daily Up/Down \u2014 Historical Dataset (Legacy Series)\n\t\n\nOffline dataset of the Bitcoin Up or Down Daily binary markets on Polymarket\n(series id 41, slug btc-up-or-down-daily), collected from the official\nPolymarket Gamma / CLOB / Data APIs, with Binance BTC/USDT 1-minute spot data\njoined for the underlying price signal.\n\n\u26a0\ufe0f This is a legacy series: it predates the modern 5m/15m/4h series, uses\nan irregular slug format (bitcoin-up-or-down-on-<date>), and resolves on\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Sigrex/polymarket_btc_up_down_1d_250314_260909.",
+    "downloads": 45,
+    "tags": [
+      "language:en",
+      "license:mit",
+      "size_categories:n<1K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "btc",
+      "1d"
+    ],
+    "createdAt": "2026-09-30T07:39:51.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6abcbc6d68745e7c1108129c",
+    "id": "Sigrex/polymarket_btc_up_down_5m_251218_260909",
+    "author": "Sigrex",
+    "cardData": {
+      "license": "mit",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "btc",
+        "5m"
+      ],
+      "pretty_name": "Polymarket BTC up/down 5m",
+      "size_categories": [
+        "10K<n<100K"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-30T09:22:51.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "859a9ee718e73a6d2f4ef04844c6842b9e612fb9",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC 5-Minute Up/Down \u2014 Historical Dataset\n\t\n\nOffline dataset of every Bitcoin Up or Down 5-minute binary market on\nPolymarket (series btc-up-or-down-5m, Gamma series id 10684), collected\nfrom the official Polymarket Gamma / CLOB / Data APIs, with Binance BTC/USDT\n1-minute spot data joined for the underlying price signal.\n\n\t\n\t\t\n\t\n\t\n\t\tSummary\n\t\n\n\n\t\n\t\t\nProperty\nValue\n\n\n\t\t\nRecords\n71,602 (all resolved markets)\n\n\nPeriod\n2025-12-18 \u2192 2026-09-08 (UTC)\n\n\nHorizon\n5 minutes\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Sigrex/polymarket_btc_up_down_5m_251218_260909.",
+    "downloads": 38,
+    "tags": [
+      "language:en",
+      "license:mit",
+      "size_categories:10K<n<100K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "btc",
+      "5m"
+    ],
+    "createdAt": "2026-09-30T07:38:21.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6abbda7cb9c4fe4ec8282c1f",
+    "id": "Sigrex/polymarket_btc_up_down_15m_250913_260908",
+    "author": "Sigrex",
+    "cardData": {
+      "license": "mit",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "btc",
+        "15m"
+      ],
+      "pretty_name": "Polymarket BTC up/down 15m",
+      "size_categories": [
+        "10K<n<100K"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-30T09:38:30.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "8db0abf034fc816a99e9f81d4206be83c69212a9",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC 15-Minute Up/Down \u2014 Historical Dataset\n\t\n\nOffline dataset of every Bitcoin Up or Down 15-minute binary market on\nPolymarket (series btc-up-or-down-15m, Gamma series id 10192), collected\nfrom the official Polymarket Gamma / CLOB / Data APIs.\n\n\t\n\t\t\n\t\n\t\n\t\tSummary\n\t\n\n\n\t\n\t\t\nProperty\nValue\n\n\n\t\t\nRecords\n34,564 (all resolved markets; 4 unresolved excluded \u2014 no label)\n\n\nPeriod\n2025-09-13 \u2192 2026-09-08 (UTC)\n\n\nHorizon\n15 minutes\n\n\nColumns\n41\n\n\nLabel balance\n~49.8% Up / ~50.2%\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Sigrex/polymarket_btc_up_down_15m_250913_260908.",
+    "downloads": 28,
+    "tags": [
+      "language:en",
+      "license:mit",
+      "size_categories:10K<n<100K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "btc",
+      "15m"
+    ],
+    "createdAt": "2026-09-29T15:34:20.000Z",
+    "key": ""
+  },
+  {
+    "_id": "6abcbc9abc4d252fc0eeaf21",
+    "id": "Sigrex/polymarket_btc_up_down_4h_251015_260909",
+    "author": "Sigrex",
+    "cardData": {
+      "license": "mit",
+      "language": [
+        "en"
+      ],
+      "tags": [
+        "polymarket",
+        "btc",
+        "4h"
+      ],
+      "pretty_name": "Polymarket BTC up/down 4h",
+      "size_categories": [
+        "1K<n<10K"
+      ]
+    },
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-09-30T09:26:49.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "d9b9f491c1014cb95c2471efa1fb00795a23e89d",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tPolymarket BTC 4-Hour Up/Down \u2014 Historical Dataset\n\t\n\nOffline dataset of every Bitcoin Up or Down 4-hour binary market on\nPolymarket (series btc-up-or-down-4h, Gamma series id 10331), collected\nfrom the official Polymarket Gamma / CLOB / Data APIs, with Binance BTC/USDT\n1-minute spot data joined for the underlying price signal.\n\n\t\n\t\t\n\t\n\t\n\t\tSummary\n\t\n\n\n\t\n\t\t\nProperty\nValue\n\n\n\t\t\nRecords\n1,936 (all resolved markets)\n\n\nPeriod\n2025-10-15 \u2192 2026-09-08 (UTC)\n\n\nHorizon\n4 hours\n\n\nColumns\n42\u2026 See the full description on the dataset page: https://hf-mirror.com/datasets/Sigrex/polymarket_btc_up_down_4h_251015_260909.",
+    "downloads": 19,
+    "tags": [
+      "language:en",
+      "license:mit",
+      "size_categories:1K<n<10K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "polymarket",
+      "btc",
+      "4h"
+    ],
+    "createdAt": "2026-09-30T07:39:06.000Z",
+    "key": ""
+  },
+  {
+    "_id": "69b5e1a892fcdb66c58a1216",
+    "id": "bmoney1321/polymarket-crypto-updown",
+    "author": "bmoney1321",
+    "disabled": false,
+    "gated": false,
+    "lastModified": "2026-03-14T22:31:05.000Z",
+    "likes": 0,
+    "private": false,
+    "sha": "2590bf7b10b1b4513761923eaf8fbf76308af845",
+    "downloads": 16,
+    "tags": [
+      "size_categories:10M<n<100M",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "createdAt": "2026-03-14T22:31:04.000Z",
+    "key": ""
+  }
+]

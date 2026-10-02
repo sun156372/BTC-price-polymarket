@@ -1,0 +1,2 @@
+combo_id,market_id,slug,side,t_minus_s,entry_ts,entry_price,entry_vwap,shares,notional_usdc,entry_fee_usdc,entry_slippage_bps,exit_price,exit_fee_usdc,exit_reason,gross_pnl,net_pnl,fees_usdc,result,won,implied_probability,underlying_move_pct,obi,liquidity_score,hedge_shares,hedge_pnl
+manual,0x5f7f9caa8aec976be044ca0736950416797f61f82771d82f9bc59eb62f8610dd,btc-updown-5m-1788820200,down,15,1788820485.0,0.795,0.797469,108.7036,86.687739,1.22898749,31.055,0.897469,0.70019183,take_profit,10.87036,8.941181,1.92917932,DOWN,True,0.795,-0.0614633822,-0.6146,0.382733,0.0,0.0

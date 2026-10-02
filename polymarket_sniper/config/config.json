@@ -1,0 +1,83 @@
+{
+  "profile": "backtest",
+  "market": {
+    "symbol": "BTCUSDT",
+    "window_seconds": 300,
+    "polymarket_series_slug": "btc-updown-5m",
+    "gamma_rest_url": "https://gamma-api.polymarket.com",
+    "clob_rest_url": "https://clob.polymarket.com",
+    "clob_ws_url": "wss://ws-subscriptions-clob.polymarket.com/ws/market",
+    "binance_rest_url": "https://api.binance.com",
+    "binance_ws_url": "wss://stream.binance.com:9443/ws"
+  },
+  "credentials": {
+    "comment": "Leave empty for backtest/paper. Live trading needs your own keys; nothing in this repo reads them over the network unless you wire a transport.",
+    "polymarket_api_key": "",
+    "polymarket_api_secret": "",
+    "polymarket_api_passphrase": "",
+    "polymarket_private_key": "",
+    "polygon_rpc_url": ""
+  },
+  "strategy": {
+    "scan_window_seconds": 10,
+    "observation_time_s": 30,
+    "threshold_pct": 0.05,
+    "take_profit": 0.10,
+    "stop_loss": 0.05,
+    "min_entry_gap_s": 30,
+    "entry_side_mode": "both",
+    "spot_confirm_pct": 0.02,
+    "probability_gap_min": 0.03,
+    "probability_gap_max": 0.25,
+    "max_entry_price": 0.92,
+    "min_entry_price": 0.08
+  },
+  "execution": {
+    "default_order_notional": 100.0,
+    "slippage_tolerance": 0.01,
+    "max_slippage_bps": 150.0,
+    "maker_first": true,
+    "maker_timeout_s": 2.0,
+    "split_order_threshold_notional": 50.0,
+    "split_participation_rate": 0.25,
+    "min_split_children": 2,
+    "max_split_children": 6,
+    "passive_price_improve_ticks": 1,
+    "tick_size": 0.001
+  },
+  "risk": {
+    "max_position_notional": 500.0,
+    "max_window_notional": 1500.0,
+    "stop_loss_prob": 0.05,
+    "trailing_stop_prob": 0.04,
+    "obi_extreme_abs": 0.85,
+    "obi_flip_abs": 0.60,
+    "volatility_stop_mult": 2.5,
+    "hedge_enabled": true,
+    "hedge_ratio": 0.60,
+    "max_hedge_ratio": 1.0,
+    "hedge_min_signal_strength": 0.55
+  },
+  "fees": {
+    "taker_fee_coefficient": 0.07,
+    "maker_rebate_share": 0.25,
+    "min_tick": 0.001
+  },
+  "backtest": {
+    "params_csv": "data/param_combinations.csv",
+    "observations_csv": "",
+    "raw_jsonl": "",
+    "output_dir": "output",
+    "sweep_workers": 1,
+    "rank_metric": "total_pnl",
+    "top_n": 25,
+    "use_full_book": false,
+    "book_levels": 5,
+    "fee_curve": "documented",
+    "slippage_model": "vwap"
+  },
+  "logging": {
+    "level": "INFO",
+    "log_file": "output/sniper.log"
+  }
+}

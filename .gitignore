@@ -1,0 +1,43 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ---- runtime output / artefacts ----
+# keep the experiment results (small, authoritative), drop regenerable logs
+polymarket_sniper/output/*
+!polymarket_sniper/output/sweep_results.csv
+!polymarket_sniper/output/sweep_ranking.json
+!polymarket_sniper/output/manual_metrics.json
+!polymarket_sniper/output/manual_trades.csv
+*.log
+.cache/
+.work/
+.tmp/
+tmp/
+
+# ---- market data dumps (large; regenerate with scripts/hf_fetch.py) ----
+work/
+*.part
+wheels/
+_wheels/
+vendor/
+
+# ---- credentials / local secrets ----
+.github-auth.json
+.github-ca-cache.pem
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+
+# ---- editor / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

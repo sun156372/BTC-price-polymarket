@@ -1,0 +1,50 @@
+{
+  "params": {
+    "combo_id": "manual",
+    "time_s": 15,
+    "threshold_pct": 0.05,
+    "take_profit": 0.1,
+    "stop_loss": 0.05,
+    "min_gap_s": 0,
+    "risk_reward": null,
+    "source": ""
+  },
+  "metrics": {
+    "combo_id": "manual",
+    "label": "manual:T15:thr0.05:tp0.1:sl0.05:gap0",
+    "trades": 1,
+    "wins": 1,
+    "losses": 0,
+    "win_rate": 1.0,
+    "gross_pnl": 10.87036,
+    "total_fees": 1.929179,
+    "total_slippage_usdc": 0.268377,
+    "net_pnl": 8.941181,
+    "avg_net_pnl": 8.941181,
+    "avg_win": 8.941181,
+    "avg_loss": 0.0,
+    "profit_factor": Infinity,
+    "expectancy_per_trade": 8.941181,
+    "max_drawdown": 0.0,
+    "sharpe": null,
+    "sortino": null,
+    "avg_slippage_bps": 31.055,
+    "avg_hold_seconds": 15.0,
+    "tp_exits": 1,
+    "sl_exits": 0,
+    "settled_exits": 0,
+    "hedged_trades": 0,
+    "markets": 500,
+    "skipped_no_price": 0,
+    "skipped_no_signal": 499,
+    "skipped_min_gap": 0,
+    "turnover_usdc": 86.687739,
+    "fee_drag_pct_of_gross": 17.7472,
+    "book_source": "synthetic"
+  },
+  "diagnostics": {
+    "observations_at_offset": 500,
+    "markets": 500,
+    "book_source": "synthetic"
+  }
+}
