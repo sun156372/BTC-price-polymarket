@@ -33,13 +33,16 @@
   "execution": {
     "_comment": "The gate that decides whether V3 may trade at all. See V3_README.md for the full ladder.",
     "max_entry_price": 0.535,
-    "_max_entry_evidence": "break-even accuracy at entry p is p + 0.07*p*(1-p). Pooled accuracy 0.5519 breaks even at p = 0.535. Above that the trade is negative EV regardless of the signal.",
+    "_max_entry_evidence": "break-even accuracy at entry p is p + 0.07*p*(1-p). Pooled win rate 0.5523 (8-fold) breaks even at p = 0.5349. Above that the trade is negative EV regardless of the signal.",
     "max_spread_cents": 4.0,
+    "_max_spread_evidence": "measured on 2,374 real quotes (288 markets, 2026-06-15): median spread 1.0c, 80.4% of quotes at the 1-cent tick, 90.5% within 5c. The 4c limit therefore admits the large majority of quotes while still rejecting the tail. NOTE: one day of book data.",
     "max_slippage_cents": 3.0,
-    "_slippage_evidence": "at +1c slippage 7/8 folds were profitable; at +3c the pooled edge is +0.0059/share; beyond ~+4c it is negative.",
+    "_slippage_evidence": "at +1c slippage 7/8 folds were profitable; at +3c the pooled edge is +0.0059/share; beyond ~+4c it is negative. Measured book depth supports far less: a 10-50 USDC order crosses at ~0 extra cost (median 0.00c) because the touch is deep.",
     "require_measured_fill": true,
-    "_require_fill_note": "V3 refuses to trade on a modelled price. Until real fills are observed, it records the gap instead. This is the sim-vs-live gap made operational.",
-    "max_quote_staleness_s": 5.0
+    "_require_fill_note": "V3 refuses to trade on a modelled price. Previously this blocked everything; the new snapshots.parquet supplies real quotes, so this gate can now be satisfied from data rather than bypassed.",
+    "max_quote_staleness_s": 5.0,
+    "_measured_entry_note": "At V3's decision point (60-120s into the window) the real median ask was 0.500 with a 1-cent spread, i.e. a taker entry of ~0.505. V3's own digital-entry model predicted 0.504. The model is validated to within a cent on this day - it no longer needs to be taken on faith.",
+    "size_check_usdc": [10.0, 25.0, 50.0, 100.0]
   },
 
   "fees": {
