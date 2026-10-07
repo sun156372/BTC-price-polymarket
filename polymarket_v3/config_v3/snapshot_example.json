@@ -1,0 +1,48 @@
+[
+  {
+    "_comment": "REFUSED: genuine signal (all three features move together -> z=-2.2), but only a modelled price and no measured fill. This is V3's default posture and the reason it usually declines to trade.",
+    "slug": "btc-updown-5m-1766038500",
+    "ts": 1766038260,
+    "end_ts": 1766038800,
+    "features": {"btc_ret_15m": -0.0042, "ind_roc_5": -0.0056, "ind_roc_15": -0.0097},
+    "quote": {"bid": 0.48, "ask": 0.50, "ts": 1766038260},
+    "measured_fill": null
+  },
+  {
+    "_comment": "ENTERED: same signal with a real fill observed at 0.50 - inside the 0.535 cap and the spread limit.",
+    "slug": "btc-updown-5m-1766038800",
+    "ts": 1766038560,
+    "end_ts": 1766039100,
+    "features": {"btc_ret_15m": -0.0044, "ind_roc_5": -0.0058, "ind_roc_15": -0.0101},
+    "quote": {"bid": 0.49, "ask": 0.50, "ts": 1766038560},
+    "measured_fill": 0.50,
+    "won": true
+  },
+  {
+    "_comment": "REFUSED: strong signal but the fill printed at 0.62 - above the cap, so negative EV by construction.",
+    "slug": "btc-updown-5m-1766039100",
+    "ts": 1766038860,
+    "end_ts": 1766039400,
+    "features": {"btc_ret_15m": -0.0051, "ind_roc_5": -0.0064, "ind_roc_15": -0.0112},
+    "quote": {"bid": 0.58, "ask": 0.60, "ts": 1766038860},
+    "measured_fill": 0.62
+  },
+  {
+    "_comment": "REFUSED: ordinary window, features move together but well inside the threshold.",
+    "slug": "btc-updown-5m-1766039400",
+    "ts": 1766039160,
+    "end_ts": 1766039700,
+    "features": {"btc_ret_15m": 0.0004, "ind_roc_5": 0.0003, "ind_roc_15": 0.0005},
+    "quote": {"bid": 0.49, "ask": 0.50, "ts": 1766039160},
+    "measured_fill": 0.50
+  },
+  {
+    "_comment": "REFUSED: strong signal and a cheap fill, but the book is 20 cents wide.",
+    "slug": "btc-updown-5m-1766039700",
+    "ts": 1766039460,
+    "end_ts": 1766040000,
+    "features": {"btc_ret_15m": 0.0050, "ind_roc_5": 0.0062, "ind_roc_15": 0.0104},
+    "quote": {"bid": 0.30, "ask": 0.50, "ts": 1766039460},
+    "measured_fill": 0.45
+  }
+]

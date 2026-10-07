@@ -1,0 +1,55 @@
+{
+  "_comment": "V3 strategy configuration. Every value is traceable to a measured result in V3_ANALYSIS.md. Change nothing here without re-running the walk-forward analysis.",
+
+  "signal": {
+    "_comment": "Fade short-term momentum. In the 9-month walk-forward sweep the '_inv' (fade) family dominated the P&L leaderboard; the follow-the-move ('_mom') family did not.",
+    "features": ["btc_ret_15m", "ind_roc_5", "ind_roc_15"],
+    "threshold_z": 2.0,
+    "invert": true,
+    "entry_t_minus_s": 240.0,
+    "_evidence": "pooled out-of-sample accuracy 0.5519 over 2,301 trades / 237 days / 8 folds; 7 of 8 folds above 0.50; worst fold 0.4783",
+    "min_trades_per_day": 1.0,
+    "_frequency_note": "threshold 2.0 gives ~9.7 trades/day. Raising it to 2.5 cuts to ~2-6/day with slightly higher accuracy but a much smaller sample per fold."
+  },
+
+  "risk": {
+    "_comment": "V3 holds to settlement. The barrier study could not justify anything tighter: results swung between +0.09 and -0.20 per share across defensible intra-window path models, so the tight-TP/SL choice was model artifact, not edge.",
+    "mode": "hold_to_settlement",
+    "catastrophe_stop": 0.35,
+    "_catastrophe_note": "0.35 is not an edge optimisation. It bounds the loss on a position that is already deeply wrong. At 0.35 the barrier is only reachable when the position has lost nearly all value.",
+    "take_profit": null,
+    "max_hold_s": 300.0,
+    "max_concurrent_positions": 1,
+    "min_seconds_between_entries": 300.0
+  },
+
+  "sizing": {
+    "notional_usdc": 10.0,
+    "max_position_pct_equity": 0.02,
+    "starting_equity": 1000.0,
+    "_comment": "2% of equity per position. With a real edge of 3 points and 10 trades/day, sizing above this turns normal variance into ruin."
+  },
+
+  "execution": {
+    "_comment": "The gate that decides whether V3 may trade at all. See V3_README.md for the full ladder.",
+    "max_entry_price": 0.535,
+    "_max_entry_evidence": "break-even accuracy at entry p is p + 0.07*p*(1-p). Pooled accuracy 0.5519 breaks even at p = 0.535. Above that the trade is negative EV regardless of the signal.",
+    "max_spread_cents": 4.0,
+    "max_slippage_cents": 3.0,
+    "_slippage_evidence": "at +1c slippage 7/8 folds were profitable; at +3c the pooled edge is +0.0059/share; beyond ~+4c it is negative.",
+    "require_measured_fill": true,
+    "_require_fill_note": "V3 refuses to trade on a modelled price. Until real fills are observed, it records the gap instead. This is the sim-vs-live gap made operational.",
+    "max_quote_staleness_s": 5.0
+  },
+
+  "fees": {
+    "taker_coefficient": 0.07,
+    "_comment": "fee per share = coefficient * p * (1-p). Settlement is not a trade and carries no exit fee."
+  },
+
+  "safety": {
+    "live_trading_enabled": false,
+    "paper_only": true,
+    "_comment": "V3 ships paper-only. live_trading_enabled must be flipped deliberately, and the execution gate above must have measured fills behind it."
+  }
+}
