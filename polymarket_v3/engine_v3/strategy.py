@@ -7,7 +7,7 @@ to book a trade at a price that was modelled rather than observed.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Mapping, Sequence
+from typing import Mapping
 
 from .config import StrategyV3
 from .signals import break_even_accuracy, taker_fee_per_share

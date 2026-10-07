@@ -35,13 +35,12 @@ import os
 import random
 import statistics
 import sys
-from collections import defaultdict
 from dataclasses import dataclass, field
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from engine_v3.data import DEFAULT_CSV, SIGNAL_FEATURES, Window, load
-from engine_v3.signals import Standardiser, max_viable_entry, norm_cdf
+from engine_v3.signals import Standardiser, norm_cdf
 
 # ------------------------------------------------------------------ config
 COST_TIERS = {"ideal": 0.0, "realistic": 0.01, "conservative": 0.15}
@@ -163,17 +162,28 @@ def walk_path(window: Window, entry_ts: float, *, side: str, entry_price: float,
 
     tp_price = min(0.999, entry_price + tp)
     sl_price = max(0.001, entry_price - sl)
+    # A barrier of 1.00 (tp) or 1.00 (sl distance) means "disabled" in the grid.
+    # It must disable the check outright: the clamped price reaches 0.999, so a
+    # naive `price >= 1.00 - epsilon` test would still fire and silently turn the
+    # hold-to-settlement cell into a barrier cell.
+    tp_active = tp < 1.0
+    sl_active = sl < 1.0
 
     spot_path = underlying_path(window, noise, leftover_fraction=leftover_fraction)
     steps = len(spot_path)
     for index, spot in enumerate(spot_path, start=1):
         f = index / steps
         time_left = remaining_total * (1.0 - f)
+
+        # Once the window has closed there is nothing left to exit into: the
+        # position settles at 1.0/0.0 and settlement is not a trade. Evaluating
+        # barriers here was a real bug - the final price is pinned to 1.0, which
+        # tripped tp=1.00 and made "hold to settlement" look like a stop-out.
         if time_left <= 0.5:
-            price_up = 1.0 if won else 0.0
-        else:
-            sigma = vol * math.sqrt(time_left)
-            price_up = norm_cdf((spot / window.open_px - 1.0) / sigma) if sigma > 0 else 0.5
+            return PathOutcome("settle", 1.0 if won else 0.0, index)
+
+        sigma = vol * math.sqrt(time_left)
+        price_up = norm_cdf((spot / window.open_px - 1.0) / sigma) if sigma > 0 else 0.5
         # pull the path toward the price we actually paid at the first steps, so
         # the walk starts at the fill instead of jumping to the model value
         if f < 0.25:
@@ -181,9 +191,9 @@ def walk_path(window: Window, entry_ts: float, *, side: str, entry_price: float,
             price_up = (1.0 - weight) * price_up + weight * entry_price_up
         price = price_up if side == "UP" else 1.0 - price_up
         price = min(0.999, max(0.001, price))
-        if price >= tp_price:
+        if tp_active and price >= tp_price:
             return PathOutcome("tp", tp_price, index)
-        if price <= sl_price:
+        if sl_active and price <= sl_price:
             return PathOutcome("sl", sl_price, index)
     return PathOutcome("settle", 1.0 if won else 0.0, steps)
 

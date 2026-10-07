@@ -45,7 +45,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from engine_v3.data import DEFAULT_CSV, SIGNAL_FEATURES, Window, intraday_frequency, load
 from engine_v3.signals import (
     PRE_FEATURES_MOMENTUM,
-    SignalDef,
     Standardiser,
     break_even_accuracy,
     edge_points,

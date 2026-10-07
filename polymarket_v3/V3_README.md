@@ -81,9 +81,37 @@ python tools_v3/analyze_v3.py --folds 9 --out ../output/v3
 python tools_v3/backtest_v3.py --folds 4 --sims 24
 ```
 
-输出 `output/v3/v3_tp_sl_study.csv`。结论见分析报告第 7 节：**在这份数据上 TP/SL 不可判定**，结果随路径假设从 +0.09 翻到 −0.20。
+输出 `output/v3/v3_tp_sl_study.csv`。结论见分析报告第八节：**在这份数据上 TP/SL 不可判定**，且保守成本档下 49 个组合全部为负。
 
-### 6. 纸面交易
+### 6. 胜率 / 盈亏比 / 频率专项报告（objective 要求的三项）
+
+```bash
+python tools_v3/edge_report_v3.py --folds 8
+```
+
+输出 `output/v3/v3_edge_report.csv` 并打印四张表：
+
+1. **逐折胜率**（池化 0.5523，逐折标准差 0.0312，含把"胜率 > 50%"和"能赚钱"区分开的那一折）
+2. **盈亏比矩阵**（PF 随进场价从 1.1501 掉到 0.9034，临界点 entry 0.5349）
+3. **频率 vs edge**（阈值 0.75–3.0 的胜率、PF、每笔期望）
+4. **日收益优化**（按"每天赚多少"而不是"每笔盈亏比"重排阈值 —— 结论与第 2 张表不同）
+
+### 7. TP/SL 敏感性（判断"最优止盈止损"能不能信）
+
+```bash
+python tools_v3/tp_sensitivity_v3.py --sims 12
+```
+
+用 6 个同样合理的路径假设重跑同一组止盈止损，看"最优"会不会变：
+
+- **持有到结算在 6 个假设下取值完全相同（+0.0221）** —— 唯一稳定的策略
+- 紧止盈跨越 −0.085 → +0.201，符号在假设之间翻转
+- 6 个假设给出 2 个不同的"最优退出" → **任何最优 TP/SL 推荐都不可辩护**
+
+脚本还会打印**模型自校验**：把 TP/SL 都禁用时必须是 100% 结算，且 P&L
+逐位等于闭式解。没有这个校验的障碍模型结果不要引用。
+
+### 8. 纸面交易
 
 ```bash
 python run_v3.py paper --snapshot config_v3/snapshot_example.json
@@ -164,7 +192,7 @@ V3 的决策顺序（`engine_v3/strategy.py`，回测与实盘共用同一条路
 
 ---
 
-## 上线前必须过的四关（来自分析报告第 9 节）
+## 上线前必须过的四关（来自分析报告第十节）
 
 1. **导出 UP/DOWN 代币真实成交与盘口**（`price, size, side, timestamp`）。这一件事的价值大于所有参数搜索。
 2. **纸上跟踪 ≥ 2 周**，记录三个比例：`unmeasured_fill` / `entry_above_cap` / `spread_too_wide`。

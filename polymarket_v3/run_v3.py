@@ -22,7 +22,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from engine_v3.config import ConfigError, describe, load_config
 from engine_v3.data import DEFAULT_CSV, SIGNAL_FEATURES, load
-from engine_v3.signals import Standardiser, break_even_accuracy, taker_fee_per_share
+from engine_v3.signals import (
+    Standardiser,
+    break_even_accuracy,
+    max_viable_entry,
+    taker_fee_per_share,
+)
 from engine_v3.strategy import (
     QUOTE_STALE,
     Quote,
@@ -149,20 +154,26 @@ def cmd_ladder(config, args) -> int:
     print()
     print(f"{'entry price':>12}{'fee/share':>11}{'accuracy needed':>17}{'verdict':>14}")
     print("-" * 78)
-    measured = 0.5519     # pooled out-of-sample accuracy from the 9-month walk-forward
+    # authoritative figure: 8-fold walk-forward, 2,305 trades / 234 days.
+    # Kept in sync with tools_v3/edge_report_v3.py, which recomputes it.
+    measured = 0.5523
     for price, needed in required_accuracy_ladder(config.fees.taker_coefficient):
         verdict = "positive EV" if measured > needed else "negative EV"
         marker = "  <-- cap" if abs(price - 0.535) < 1e-9 else ""
         print(f"{price:>12.3f}{taker_fee_per_share(price):>11.4f}"
               f"{needed:>17.4f}{verdict:>14}{marker}")
     print()
-    print(f"Measured pooled out-of-sample accuracy : {measured:.4f}")
+    print(f"Measured pooled win rate (8-fold)      : {measured:.4f}")
+    print(f"Break-even entry price at that win rate: {max_viable_entry(measured):.4f}")
     print(f"Configured entry cap                   : {config.execution.max_entry_price:.3f}")
     print(f"Break-even accuracy at the cap         : "
           f"{break_even_accuracy(config.execution.max_entry_price):.4f}")
     print()
     print("Any fill above the cap is refused by execution.max_entry_price,")
     print("because no signal quality can rescue a price that already ate the edge.")
+    print()
+    print("Recompute this table any time with:")
+    print("  python tools_v3/edge_report_v3.py --folds 8")
     return 0
 
 
