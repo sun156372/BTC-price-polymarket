@@ -26,6 +26,23 @@ wheels/
 _wheels/
 vendor/
 
+# ---- high-frequency market data (supplied archives + extraction) ----
+# tar.gz archives are ~1.26 GB; the extracted Hive tree is ~1.3 GB over 3,322
+# files. Both are inputs, not source. Rebuild with:
+#   python polymarket_v3/tools_v3/extract_archives_v3.py
+market_parquet_*.tar.gz
+micro_v3/
+_staging/
+
+# ---- 1-day order book export (superseded by the micro_v3 tree) ----
+markets.parquet
+snapshots.parquet
+trades.parquet
+deltas.parquet
+
+# ---- regenerable run outputs (keep the code, drop the artefacts) ----
+output/
+
 # ---- credentials / local secrets ----
 .github-auth.json
 .github-ca-cache.pem
