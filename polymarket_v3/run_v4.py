@@ -24,18 +24,24 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from engine_v3.signals import break_even_accuracy, taker_fee_per_share
 from engine_v3.strategy_v4 import READY, V4Params, StrategyV4
 
-#: measured on the 4-day high-frequency sample, for the SHIPPED cell
-#: (follow, T-240, threshold 0.15, hold to settlement, 1,148 markets)
-MEASURED_ACCURACY = 0.7701
-MEASURED_ENTRY = 0.7394
-MEASURED_TRADES_PER_DAY = 87.0
-#: that cell's realised per-day pnl/share, recomputed from the tape per day:
-#: 2026-03-27 +0.0210 (113 trades), 03-28 -0.0027 (90), 03-29 +0.0344 (102),
-#: 03-31 +0.0159 (130). Mean +0.0171, std 0.0133, 3 of 4 days positive.
-DAILY_PNL_PER_SHARE = (0.0210, -0.0027, 0.0344, 0.0159)
-#: the neighbouring T-285 cell, kept as the cautionary counter-example: it looked
-#: better in the pooled sweep (+0.0458/share) and then decayed to -0.0592.
-DECAY_EXAMPLE = (0.0458, 0.0286, -0.0129, -0.0592)
+#: measured on the 11-day high-frequency sample (2026-03-27 .. 2026-04-19, 3,165
+#: resolved 5m markets), for the SHIPPED cell:
+#: follow, T-240, threshold 0.15, hold to settlement
+MEASURED_ACCURACY = 0.7719
+MEASURED_ENTRY = 0.7425
+MEASURED_TRADES_PER_DAY = 117.0
+#: that cell's realised per-day pnl/share across the 11 days: mean +0.0165,
+#: std 0.029, 8 of 11 positive.
+DAILY_PNL_PER_SHARE = (0.0201, 0.0054, 0.0344, 0.0227, 0.0057, -0.0110,
+                       0.0778, -0.0062, 0.0262, 0.0239, -0.0056)
+#: with the 5bps spot-move deviation filter: mean +0.0239, 10 of 11 positive,
+#: on 665 trades instead of 1,281.
+FILTERED_DAILY = (0.0361, 0.0042, 0.0146, 0.0057, 0.0233, 0.1077,
+                  0.0252, 0.0115, 0.0606, 0.0379, -0.0216)
+#: the earlier 4-day sample, kept as a warning. This cell looked like +1.77%/share
+#: there and the neighbouring T-285 cell looked even better (+0.0458/share) before
+#: decaying to -0.0592. Short samples overstate this strategy.
+FOUR_DAY_EDGE = 0.0177
 
 
 # --------------------------------------------------------------- selfcheck
@@ -104,6 +110,23 @@ def cmd_selfcheck(params: V4Params) -> int:
                              quote_ts=1000.0, measured_fill=0.70, shares_wanted=14.0,
                              depth_cost=0.70 * 14.0, halted=True)
     check("halted market refused", not halted.entering, halted.reason)
+
+    # 7b. the price-deviation filter
+    from engine_v3.strategy_v4 import WEAK_DRIVER
+    tiny = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.70, now=1000.0,
+                           quote_ts=1000.0, measured_fill=0.70, shares_wanted=14.0,
+                           depth_cost=0.70 * 14.0, spot_move=p.min_spot_move / 10.0)
+    check("unbacked token move refused by the deviation filter",
+          not tiny.entering and tiny.reason == WEAK_DRIVER, tiny.reason)
+    backed = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.70, now=1000.0,
+                             quote_ts=1000.0, measured_fill=0.70, shares_wanted=14.0,
+                             depth_cost=0.70 * 14.0, spot_move=p.min_spot_move * 2.0)
+    check("a spot-backed move still enters", backed.entering, backed.reason)
+    no_spot = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.70, now=1000.0,
+                              quote_ts=1000.0, measured_fill=0.70, shares_wanted=14.0,
+                              depth_cost=0.70 * 14.0, spot_move=None)
+    check("filter is skipped when spot data is absent (documented, not silent)",
+          no_spot.entering, no_spot.reason)
 
     # 8. exits: the shipped configuration holds to settlement
     stop, target = strategy.exit_levels(0.74)
@@ -178,6 +201,7 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
     print("2. THE PART THAT MATTERS: HOW WELL IS THE EDGE PINNED DOWN?")
     print("=" * 100)
     daily = list(DAILY_PNL_PER_SHARE)
+    filtered = list(FILTERED_DAILY)
     mean_daily = statistics.fmean(daily)
     std_daily = statistics.pstdev(daily)
     stake_shares = stake / entry
@@ -212,12 +236,25 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
         print(f"    {level:.0f} std-error band: {lo:+.2f} .. {hi:+.2f} USDC/day")
     print()
     print("  The 2-sigma lower bound is still positive, which is encouraging, but it")
-    print("  rests on four days. The cautionary counter-example is the neighbouring")
-    print(f"  T-285 cell of the SAME rule, which looked better pooled "
-          f"({DECAY_EXAMPLE[0]:+.4f}/share)")
-    print(f"  and then decayed to {DECAY_EXAMPLE[-1]:+.4f}. Parameter cells this close")
-    print("  together behaved completely differently, which is exactly why four days")
-    print("  cannot settle it.")
+    print(f"  rests on {len(daily)} days. The wider sample already showed how fragile this")
+    print("  is: of 1,260 configurations swept across the same 11 days, only 2.3% are")
+    print("  positive at all, and the neighbouring T-285 cell of the SAME rule moved")
+    print("  from +0.0458/share to -0.0592 within a four-day slice. Parameter cells")
+    print("  this close together behaving that differently is the whole caution.")
+
+    print()
+    print("  THE DEVIATION FILTER (require |spot move| >= 5 bps):")
+    fmean = statistics.fmean(filtered)
+    fstd = statistics.pstdev(filtered)
+    fpos = sum(1 for v in filtered if v > 0)
+    print(f"    without: {mean_daily:+.4f}/share, std {std_daily:.4f}, "
+          f"{sum(1 for v in daily if v > 0)}/{len(daily)} days positive")
+    print(f"    with   : {fmean:+.4f}/share, std {fstd:.4f}, "
+          f"{fpos}/{len(filtered)} days positive")
+    print(f"    per-share gain {fmean-mean_daily:+.4f}; it trades 665 rather than")
+    print(f"    1,281 times, so the gain is per TRADE, not per day.")
+    print(f"    at {stake:.0f} USDC and ~60 trades/day: "
+          f"{fmean*stake_shares*60.0:+.2f} USDC/day")
 
     # --------------------------------------------------- accuracy sensitivity
     print()
@@ -240,8 +277,9 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
               f"{verdict:>14}{flag}")
     print()
     print("  A 2-point accuracy decay halves the edge. A 4-point decay erases it.")
-    print("  And the T-285 variant of this same rule decayed by 10 points across the")
-    print(f"  four days ({DECAY_EXAMPLE[0]:+.4f} -> {DECAY_EXAMPLE[-1]:+.4f} per share).")
+    print("  And the T-285 variant of this same rule decayed by 10 accuracy points")
+    print("  across a four-day slice (+0.0458 -> -0.0592 per share), which is exactly")
+    print("  the kind of drift that would wipe this out.")
 
     # ------------------------------------------------------------ cost stress
     print()
