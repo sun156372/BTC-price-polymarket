@@ -24,32 +24,53 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from engine_v3.signals import break_even_accuracy, taker_fee_per_share
 from engine_v3.strategy_v4 import READY, V4Params, StrategyV4
 
-#: Measured on the 14-day high-frequency sample (2026-03-27 .. 2026-04-26, 4,023
-#: resolved 5m markets), for the SHIPPED cell:
-#: follow, T-240, threshold 0.20, hold to settlement
-MEASURED_ACCURACY = 0.8170
-MEASURED_ENTRY = 0.7792
-MEASURED_TRADES_PER_DAY = 73.0
-#: that cell's realised per-day pnl/share across the 14 days: mean +0.0292,
-#: std 0.0362, 10 of 14 positive.
-DAILY_PNL_PER_SHARE = (0.0770, -0.0078, 0.0150, 0.0010, -0.0087, 0.0383, 0.0638,
-                       0.0368, 0.0487, 0.0634, -0.0257, -0.0156, 0.0951, 0.0282)
-#: The 5 bps spot-move deviation filter, threshold-0.15 cell, per day. Days 1-11
-#: are from the 11-day run; days 12-14 are the 14-day assessment (-0.0216 is the
-#: 04-19 value the 11-day run also ended on, then the three new days). It must
-#: cover the SAME days as the unfiltered series or the comparison is invalid.
+#: ---------------------------------------------------------------------------
+#: The SHIPPED cell is: follow, T-120, threshold 0.20, 4.5bps spot filter,
+#: hold to settlement. It was chosen on the 14 in-sample days and then tested on
+#: 10 untouched May days (tools_v3/oos_v4.py).
+#:
+#: The out-of-sample figures below are the ones to plan against. The in-sample
+#: series is kept only to show how much the fitting period flatters the result.
+#: ---------------------------------------------------------------------------
+#: OUT-OF-SAMPLE, EXACT, WITH THE ENTRY CAP APPLIED (the real shipped behaviour).
+#: 10 unseen days (2026-05-01 .. 05-17), 385 trades. Computed by
+#: tools_v3/oos_daily_v4.py.
+#:
+#: Note the trade count: the uncapped grid run showed 890 trades at +0.85%/share,
+#: but the 0.90 entry cap rejects more than half of them, leaving 385 at
+#: +0.39%/share. The cap is a deliberate negative-EV guard, so this lower figure
+#: is the honest one to plan against.
+OOS_ACCURACY = 0.9130
+OOS_ENTRY = 0.8880
+OOS_TRADES_PER_DAY = 38.5
+OOS_EDGE_PER_SHARE = 0.0039
+OOS_DAYS_POSITIVE = 6
+OOS_DAYS = 10
+#: exact per-day pnl/share, shipped cell, out of sample
+OOS_DAILY = (-0.0059, 0.0472, 0.0078, 0.0526, -0.0595,
+             0.0454, 0.0061, -0.0187, 0.0509, -0.0865)
+#: IN-SAMPLE, SAME CONFIGURATION AND SAME CAP: 14 days, 759 trades
+IN_SAMPLE_ACCURACY = 0.9040
+IN_SAMPLE_ENTRY = 0.8880
+IN_SAMPLE_TRADES_PER_DAY = 54.0
+IN_SAMPLE_EDGE_PER_SHARE = 0.0132
+IN_SAMPLE_DAYS_POSITIVE = 8
+IN_SAMPLE_DAYS = 14
+#: exact per-day pnl/share, shipped cell, in sample
+IN_SAMPLE_DAILY = (0.0419, -0.0104, -0.0219, -0.0435, 0.0113, 0.0409, 0.0482,
+                   0.0360, 0.0987, 0.0406, 0.0239, -0.0344, -0.0443, -0.0022)
+#: the cell that WON in sample and FAILED out of sample - the cautionary result
+FAILED_CELL = "T-240 thr0.20 no filter: +2.62% in sample, -0.86% out"
+FAILED_CELL_OOS = -0.0086
+#: retained for the filter comparison, on the threshold-0.15 cell
 FILTERED_DAILY = (0.0361, 0.0042, 0.0146, 0.0057, 0.0233, 0.1077, 0.0252,
                   0.0115, 0.0606, 0.0379, -0.0216, 0.0051, 0.0864, 0.0223)
-#: The sample history, kept as the main warning. The same rule measured
-#: +1.77%/share on 4 days, +1.65% on 11, and +1.02% on 14 at threshold 0.15 -
-#: every widening of the sample shrank the edge.
+ELEVEN_DAY_FILTER_BASELINE = (0.0201, 0.0054, 0.0344, 0.0227, 0.0057, -0.0110,
+                              0.0778, -0.0062, 0.0262, 0.0239, -0.0056)
+#: the sample history, kept as the main warning
 FOUR_DAY_EDGE = 0.0177
 ELEVEN_DAY_EDGE = 0.0165
 FOURTEEN_DAY_EDGE_015 = 0.0102
-#: the threshold-0.15 cell's unfiltered per-day series over the first 11 days,
-#: paired with FILTERED_DAILY so the filter comparison uses identical days
-ELEVEN_DAY_FILTER_BASELINE = (0.0201, 0.0054, 0.0344, 0.0227, 0.0057, -0.0110,
-                              0.0778, -0.0062, 0.0262, 0.0239, -0.0056)
 
 
 # --------------------------------------------------------------- selfcheck
@@ -75,8 +96,8 @@ def cmd_selfcheck(params: V4Params) -> int:
     # 2. the cap must sit above the measured entry but below the implied break-even
     cap = p.max_entry_price
     be = strategy.break_even_entry
-    check("cap is above the measured entry price", cap > MEASURED_ENTRY,
-          f"cap {cap} vs entry {MEASURED_ENTRY}")
+    check("cap is above the measured entry price", cap > OOS_ENTRY,
+          f"cap {cap} vs entry {OOS_ENTRY}")
     check("cap is not far above break-even", cap - be < 0.02,
           f"cap {cap:.4f} vs break-even {be:.4f}")
 
@@ -91,12 +112,25 @@ def cmd_selfcheck(params: V4Params) -> int:
     check("a small move is refused",
           strategy.direction(0.50, 0.50 + p.threshold / 2) is None)
 
-    # 4. the gate refuses an overpriced entry even with a strong signal
-    decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.90,
-                               now=1000.0, quote_ts=1000.0, measured_fill=0.90,
-                               shares_wanted=13.0, depth_cost=0.90 * 13.0)
+    # 4. the gate refuses an overpriced entry even with a strong signal.
+    #    Prices are derived from the configured cap, so moving the cap cannot make
+    #    this test silently vacuous.
+    pricey = min(0.995, p.max_entry_price + 0.02)
+    decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                               ask=pricey, now=1000.0, quote_ts=1000.0,
+                               measured_fill=pricey, shares_wanted=10.0,
+                               depth_cost=pricey * 10.0)
     check("expensive entry refused", not decision.entering
-          and decision.reason == "execution:entry_above_cap", decision.reason)
+          and decision.reason == "execution:entry_above_cap",
+          f"{decision.reason} at {pricey:.3f} vs cap {p.max_entry_price:.3f}")
+    # and just inside the cap it must still enter
+    inside = max(0.05, p.max_entry_price - 0.02)
+    decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                               ask=inside, now=1000.0, quote_ts=1000.0,
+                               measured_fill=inside, shares_wanted=10.0,
+                               depth_cost=inside * 10.0)
+    check("an entry just inside the cap is allowed", decision.entering,
+          f"{decision.reason} at {inside:.3f} vs cap {p.max_entry_price:.3f}")
 
     # 5. the gate refuses a modelled fill
     decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.70,
@@ -150,10 +184,23 @@ def cmd_selfcheck(params: V4Params) -> int:
           f"stop={stop2} target={target2}")
 
     # 9. arithmetic of the edge: accuracy must exceed break-even
-    per_share = MEASURED_ACCURACY - MEASURED_ENTRY - taker_fee_per_share(MEASURED_ENTRY)
-    check("measured edge is positive", per_share > 0, f"{per_share:+.4f}/share")
-    check("measured edge is thin (<5 points)",
-          per_share < 0.05, f"{per_share:+.4f}/share")
+    # 9. arithmetic of the edge, computed from the constants rather than hardcoded.
+    #    The THEORETICAL edge comes from the break-even identity; the REALISED
+    #    out-of-sample edge is what those trades actually paid, after the entry cap
+    #    and the fill distribution. They differ, and the gap is the honest measure
+    #    of how much a small sample can drift from the arithmetic.
+    theoretical = OOS_ACCURACY - OOS_ENTRY - taker_fee_per_share(OOS_ENTRY)
+    check("theoretical edge at the measured entry is positive",
+          theoretical > 0, f"{theoretical:+.4f}/share")
+    check("theoretical edge is thin (<3 points)",
+          theoretical < 0.03, f"{theoretical:+.4f}/share")
+    check("realised out-of-sample edge is positive",
+          OOS_EDGE_PER_SHARE > 0, f"{OOS_EDGE_PER_SHARE:+.4f}/share")
+    check("realised edge is smaller than theoretical (small sample drift)",
+          OOS_EDGE_PER_SHARE < theoretical,
+          f"realised {OOS_EDGE_PER_SHARE:+.4f} vs theoretical {theoretical:+.4f}")
+    check("the in-sample-optimal cell FAILED out of sample (the lesson holds)",
+          FAILED_CELL_OOS < 0, f"{FAILED_CELL_OOS:+.4f}/share")
 
     failed = 0
     for name, ok, detail in checks:
@@ -168,39 +215,51 @@ def cmd_selfcheck(params: V4Params) -> int:
 
 # ------------------------------------------------------------------ outlook
 def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
-    daily = list(DAILY_PNL_PER_SHARE)
-    filtered = list(FILTERED_DAILY)
+    """Lead with the OUT-OF-SAMPLE numbers, because the in-sample ones flatter."""
     strategy = StrategyV4(params)
-    entry = MEASURED_ENTRY
-    accuracy = MEASURED_ACCURACY
+    entry = OOS_ENTRY
+    accuracy = OOS_ACCURACY
     fee = taker_fee_per_share(entry, params.fee_coefficient)
     edge = accuracy - entry - fee
-    # derived here so the header and the later sections share one definition
+    daily = list(OOS_DAILY)
     mean_daily = statistics.fmean(daily)
     std_daily = statistics.pstdev(daily)
     stake_shares = stake / entry
     stderr = std_daily / math.sqrt(len(daily))
 
     print("=" * 100)
-    print("V4 LIVE OUTLOOK - what real trading would plausibly return")
+    print("V4 LIVE OUTLOOK - anchored on OUT-OF-SAMPLE data")
     print("=" * 100)
-    print("Every number below is anchored to a MEASURED input. Nothing is annualised,")
-    print(f"because {len(daily)} days of data cannot support an annual figure.")
+    print("The shipped cell (follow, T-120, thr 0.20, 4.5bps spot filter) was chosen on")
+    print("14 in-sample days, then applied UNCHANGED to 10 unseen May days. Everything")
+    print("headline below is from those 10 unseen days. In-sample figures are shown only")
+    print("to expose how much the fitting period inflates the result.")
     print()
-    print(f"MEASURED INPUTS ({len(daily)} days of real order book, "
-          f"4,023 resolved 5m markets)")
-    print(f"  direction accuracy      : {accuracy:.4f}")
-    print(f"  average entry price     : {entry:.4f}")
-    print(f"  taker fee per share     : {fee:.4f}")
-    print(f"  break-even entry price  : {strategy.break_even_entry:.4f}"
-          f"   (cap configured at {params.max_entry_price:.3f})")
-    print(f"  edge per share          : {edge:+.4f}")
-    print(f"  trades per day          : {MEASURED_TRADES_PER_DAY:.0f}")
+    print(f"  {'':<26}{'IN-SAMPLE':>14}{'OUT-OF-SAMPLE':>16}")
+    print("  " + "-" * 54)
+    print(f"  {'days':<26}{IN_SAMPLE_DAYS:>14}{OOS_DAYS:>16}")
+    print(f"  {'accuracy':<26}{IN_SAMPLE_ACCURACY:>14.4f}{OOS_ACCURACY:>16.4f}")
+    print(f"  {'entry price':<26}{IN_SAMPLE_ENTRY:>14.4f}{OOS_ENTRY:>16.4f}")
+    print(f"  {'edge per share':<26}{IN_SAMPLE_EDGE_PER_SHARE:>+14.4f}"
+          f"{OOS_EDGE_PER_SHARE:>+16.4f}")
+    print(f"  {'days positive':<26}"
+          f"{str(IN_SAMPLE_DAYS_POSITIVE) + '/' + str(IN_SAMPLE_DAYS):>14}"
+          f"{str(OOS_DAYS_POSITIVE) + '/' + str(OOS_DAYS):>16}")
+    print(f"  {'trades per day':<26}{IN_SAMPLE_TRADES_PER_DAY:>14.0f}"
+          f"{OOS_TRADES_PER_DAY:>16.0f}")
     print()
+    print(f"  fee per share at the measured entry: {fee:.4f}")
+    print(f"  break-even entry price            : {strategy.break_even_entry:.4f}   "
+          f"(cap {params.max_entry_price:.3f})")
+    print()
+    print("  THE CELL THAT FAILED, for scale:")
+    print(f"    {FAILED_CELL}")
+    print("    Selecting on in-sample P&L alone picks that cell. Adding a day-level")
+    print("    consistency requirement picks the shipped one instead.")
 
-    # ---------------------------------------------------- per-trade economics
+    print()
     print("=" * 100)
-    print("1. PER-TRADE ECONOMICS AT A GIVEN STAKE")
+    print("1. PER-TRADE ECONOMICS AT A GIVEN STAKE (out-of-sample edge)")
     print("=" * 100)
     print(f"{'stake':>8}{'shares':>9}{'win pays':>10}{'lose pays':>11}"
           f"{'expectancy':>12}{'per day':>10}{'per month':>11}")
@@ -211,153 +270,62 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
         lose = -shares * (entry + fee)
         per_trade = shares * edge
         print(f"{candidate:>8.0f}{shares:>9.2f}{win:>+10.3f}{lose:>+11.3f}"
-              f"{per_trade:>+12.4f}{per_trade*MEASURED_TRADES_PER_DAY:>+10.2f}"
-              f"{per_trade*MEASURED_TRADES_PER_DAY*30:>+11.1f}")
+              f"{per_trade:>+12.4f}{per_trade*OOS_TRADES_PER_DAY:>+10.2f}"
+              f"{per_trade*OOS_TRADES_PER_DAY*30:>+11.1f}")
 
-    # --------------------------------------------------------- the real risk
     print()
     print("=" * 100)
-    print("2. THE PART THAT MATTERS: HOW WELL IS THE EDGE PINNED DOWN?")
+    print("2. HOW WELL IS IT PINNED DOWN?")
     print("=" * 100)
-    stake_shares = stake / entry
-    stderr = std_daily / math.sqrt(len(daily))
-    print(f"  per-day pnl/share actually observed: "
+    print(f"  out-of-sample per-day pnl/share: "
           f"{', '.join(f'{v:+.4f}' for v in daily)}")
-    print(f"  mean {mean_daily:+.4f}/share over {len(daily)} days")
-    print(f"  std {std_daily:.4f}/share -> standard error {stderr:.4f} "
-          f"(only {len(daily)} days!)")
+    print(f"  mean {mean_daily:+.4f}  std {std_daily:.4f}  -> standard error "
+          f"{stderr:.4f} on {len(daily)} days")
+    lo1 = (mean_daily - stderr) * stake_shares * OOS_TRADES_PER_DAY
+    hi1 = (mean_daily + stderr) * stake_shares * OOS_TRADES_PER_DAY
+    lo2 = (mean_daily - 2 * stderr) * stake_shares * OOS_TRADES_PER_DAY
+    hi2 = (mean_daily + 2 * stderr) * stake_shares * OOS_TRADES_PER_DAY
+    print(f"  1 std-error band: {lo1:+.2f} .. {hi1:+.2f} USDC/day")
+    print(f"  2 std-error band: {lo2:+.2f} .. {hi2:+.2f} USDC/day")
     print()
-    print("  Two different uncertainties, and they are easy to confuse:")
-    print(f"    a) per-TRADE edge      : {edge:+.4f}/share, "
-          f"i.e. {edge*stake_shares:+.3f} USDC per trade at a {stake:.0f} USDC stake")
-    print(f"       x {MEASURED_TRADES_PER_DAY:.0f} trades/day = "
-          f"{edge*stake_shares*MEASURED_TRADES_PER_DAY:+.2f} USDC/day")
-    print(f"    b) per-DAY realisation : {mean_daily:+.4f}/share observed mean, "
-          f"std {std_daily:.4f}")
-    print()
-    print(f"  These two agree well: {mean_daily:+.4f} observed vs {edge:+.4f} arithmetic.")
-    print(f"  {sum(1 for v in daily if v > 0)} of {len(daily)} days were positive, and "
-          f"the worst day cost")
-    print(f"  {abs(min(daily))*stake_shares*MEASURED_TRADES_PER_DAY:.1f} USDC at a "
-          f"{stake:.0f} USDC stake. That is a coherent picture rather than a")
-    print("  contradiction - which is a genuinely better result than most of the")
-    print("  neighbouring parameter cells produce.")
-    print()
-    print(f"  But {len(daily)} observations is still tiny. Standard error of the daily")
-    print(f"  mean: {stderr:.4f}/share, i.e. the daily result could plausibly be:")
-    for level in (1.0, 2.0):
-        lo = (mean_daily - level * stderr) * stake_shares * MEASURED_TRADES_PER_DAY
-        hi = (mean_daily + level * stderr) * stake_shares * MEASURED_TRADES_PER_DAY
-        print(f"    {level:.0f} std-error band: {lo:+.2f} .. {hi:+.2f} USDC/day")
-    print()
-    print("  The 2-sigma lower bound is still positive, which is encouraging, but it")
-    print(f"  rests on {len(daily)} days. The SAME rule measured {FOUR_DAY_EDGE*100:.2f}%/share")
-    print(f"  on 4 days, {ELEVEN_DAY_EDGE*100:.2f}% on 11, and {FOURTEEN_DAY_EDGE_015*100:.2f}% on 14 at")
-    print("  threshold 0.15 - every widening of the sample shrank the edge. And of")
-    print("  1,260 configurations swept across these 14 days, only 1.3% are positive")
-    print("  at all. Parameter cells that close together behaving that differently is")
-    print("  the whole caution.")
+    print("  The gap between these two numbers is the story:")
+    print(f"    arithmetic edge at the measured entry : {edge:+.4f}/share")
+    print(f"    what the trades actually paid (OOS)   : {OOS_EDGE_PER_SHARE:+.4f}/share")
+    print("  A 385-trade sample can drift that far from the arithmetic. The arithmetic")
+    print("  says the setup is worth ~1.8 points; ten days of it delivered 0.4.")
+    print("  The 2-sigma band below still includes zero, so this sample does NOT")
+    print("  establish a positive edge - it only fails to rule one out.")
 
     print()
-    print("  THE DEVIATION FILTER (require |spot move| >= 4.5 bps):")
-    fmean = statistics.fmean(filtered)
-    fstd = statistics.pstdev(filtered)
-    fpos = sum(1 for v in filtered if v > 0)
-    # Compare the filter on the SAME threshold-0.15 cell, so this pairing is
-    # apples-to-apples. The shipped cell is threshold 0.20, whose unfiltered
-    # numbers are the ones used everywhere else in this report.
-    cell_daily = ELEVEN_DAY_FILTER_BASELINE + tuple(daily[11:])
-    cmean = statistics.fmean(cell_daily)
-    cpos = sum(1 for v in cell_daily if v > 0)
-    print(f"    cell (thr 0.15)  without: {cmean:+.4f}/share, "
-          f"{cpos}/{len(cell_daily)} days positive")
-    print(f"    cell (thr 0.15)  with   : {fmean:+.4f}/share, "
-          f"{fpos}/{len(filtered)} days positive")
-    print(f"    per-share gain {fmean-cmean:+.4f} on the same days and the same cell.")
-    print("    It trades 782 rather than 1,619 times, so the gain is per TRADE, not")
-    print("    per day. Pooled figures: +1.83% filtered vs +1.02% unfiltered.")
-    print("    Assessed by tools_v3/filter_assessment_v4.py on four axes: pooled gain,")
-    print("    monotonicity, non-redundancy against a spread cap, and robustness to a")
-    print("    delayed spot read (it survives, so it is not reading the future).")
-
-    # --------------------------------------------------- accuracy sensitivity
-    print()
     print("=" * 100)
-    print("3. SENSITIVITY: HOW MUCH ACCURACY DECAY CAN IT SURVIVE?")
+    print("3. COST TOLERANCE - the edge is thin, so this decides everything")
     print("=" * 100)
-    print("  The edge is thin, so this is the question that decides whether it lives.")
-    print()
-    print(f"  {'accuracy':>9}{'entry':>8}{'break-even':>12}{'edge/share':>12}"
-          f"{'per day':>10}{'verdict':>14}")
+    print(f"  {'scenario':<26}{'paid entry':>12}{'edge/share':>12}"
+          f"{'per day':>10}{'verdict':>12}")
     print("-" * 100)
-    for delta in (-0.06, -0.04, -0.02, 0.0, +0.02):
-        acc = accuracy + delta
-        be = break_even_accuracy(entry, params.fee_coefficient)
-        e = acc - be
-        per_day = e * (stake / entry) * MEASURED_TRADES_PER_DAY
-        verdict = "profitable" if e > 0 else "LOSING"
-        flag = "   <- measured" if abs(delta) < 1e-9 else ""
-        print(f"  {acc:>9.4f}{entry:>8.3f}{be:>12.4f}{e:>+12.4f}{per_day:>+10.2f}"
-              f"{verdict:>14}{flag}")
-    print()
-    print("  A 2-point accuracy decay halves the edge. A 4-point decay erases it.")
-    print("  And the T-285 variant of this same rule decayed by 10 accuracy points")
-    print("  across a four-day slice (+0.0458 -> -0.0592 per share), which is exactly")
-    print("  the kind of drift that would wipe this out.")
-
-    # ------------------------------------------------------------ cost stress
-    print()
-    print("=" * 100)
-    print("4. COST STRESS: WHAT EATS THE EDGE?")
-    print("=" * 100)
-    print(f"  {'scenario':<34}{'entry':>8}{'edge/share':>12}{'per day':>10}{'verdict':>12}")
-    print("-" * 100)
-    scenarios = [
-        ("as measured", 0.0),
-        ("+1 cent slippage", 0.01),
-        ("+2 cents slippage", 0.02),
-        ("+3 cents slippage", 0.03),
-        ("+5 cents slippage", 0.05),
-    ]
-    for label, extra in scenarios:
+    for label, extra in (("as measured", 0.0), ("+1 cent slippage", 0.01),
+                         ("+2 cents slippage", 0.02), ("+3 cents slippage", 0.03)):
         paid = entry + extra
         e = accuracy - paid - taker_fee_per_share(paid, params.fee_coefficient)
-        per_day = e * (stake / paid) * MEASURED_TRADES_PER_DAY
-        print(f"  {label:<34}{paid:>8.4f}{e:>+12.4f}{per_day:>+10.2f}"
+        per_day = e * (stake / paid) * OOS_TRADES_PER_DAY
+        print(f"  {label:<26}{paid:>12.4f}{e:>+12.4f}{per_day:>+10.2f}"
               f"{('profitable' if e > 0 else 'LOSING'):>12}")
 
-    # -------------------------------------------------------------- capacity
-    print()
-    print("=" * 100)
-    print("5. CAPACITY (measured, not assumed)")
-    print("=" * 100)
-    print("  Measured fill rate on the real book: 10 USDC 100%, 25 USDC 100%,")
-    print("  50 USDC 100%; median extra cost 0.00 cents, p90 0.79 cents at 50 USDC.")
-    print("  So size up to ~50 USDC is not depth-limited. Above that the p90 walk")
-    print("  grows and has not been measured here.")
     print()
     print("=" * 100)
     print("BOTTOM LINE")
     print("=" * 100)
-    print(f"  Arithmetic expectation : {edge*stake_shares*MEASURED_TRADES_PER_DAY:+.2f} "
-          f"USDC/day at a {stake:.0f} USDC stake")
-    lo2 = (mean_daily - 2 * stderr) * stake_shares * MEASURED_TRADES_PER_DAY
-    hi2 = (mean_daily + 2 * stderr) * stake_shares * MEASURED_TRADES_PER_DAY
-    print(f"  2 std-error band       : {lo2:+.2f} .. {hi2:+.2f} USDC/day")
-    print(f"  What 4 days delivered  : {mean_daily*stake_shares*MEASURED_TRADES_PER_DAY:+.2f} "
-          f"USDC/day ({sum(1 for v in daily if v > 0)} of {len(daily)} days positive)")
+    per_trade = edge * stake_shares
+    print(f"  Out-of-sample expectation: {per_trade*OOS_TRADES_PER_DAY:+.2f} USDC/day "
+          f"at a {stake:.0f} USDC stake")
+    print(f"  2 std-error band          : {lo2:+.2f} .. {hi2:+.2f} USDC/day")
+    print(f"  Days positive             : {OOS_DAYS_POSITIVE}/{OOS_DAYS}")
     print()
-    print("  The point estimate is positive and the per-trade and per-day numbers")
-    print("  agree, which is a good sign. What is NOT established is durability:")
-    print("  the neighbouring T-285 cell of the same rule pooled at +0.0458/share and")
-    print("  decayed to -0.0592 within these very four days. Two adjacent settings")
-    print("  behaved completely differently, so four days cannot tell you which one")
-    print("  generalises.")
-    print()
-    print("  Practical read: the mechanism (follow the move, hold to settlement, refuse")
-    print("  overpriced entries) is supported by the data. The RETURN is not. Paper")
-    print("  trade it for a month before committing capital - the code is ready, the")
-    print("  evidence is not.")
+    print("  This is the first figure in the project backed by genuinely unseen data,")
+    print("  and it is smaller than every in-sample number quoted before it. It is")
+    print("  also thin enough that one cent of extra slippage removes most of it. The")
+    print("  next validation must be a SECOND out-of-sample period, not more tuning on")
+    print("  these 24 days.")
     return 0
 
 

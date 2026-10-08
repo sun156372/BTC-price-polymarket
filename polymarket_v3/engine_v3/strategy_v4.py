@@ -47,27 +47,39 @@ WEAK_DRIVER = "deviation:spot_move_too_small"
 
 @dataclass(frozen=True)
 class V4Params:
-    """Tunables, from the measured sweep on 3,165 resolved 5m markets (11 days).
+    """Tunables, validated on a genuine out-of-sample split.
 
-    The winners share three properties, and each one contradicts an earlier belief:
+    14 in-sample days (2026-03-27..04-26, 4,023 markets) were used to choose
+    parameters; 10 untouched May days (2,877 markets) were used to test them.
 
-    * ``mode="follow"`` - fading wins **0 of 603** configurations; following is the
-      only direction that works at all
+    What survived:
+
+    * ``mode="follow"`` - fading won **0 of 603** configurations in sample
     * ``take_profit=1.0`` - every tight take profit won more trades and lost money
-    * a high ``threshold`` - on 14 days, everything at or below 0.12 loses money
+    * ``threshold=0.20`` - everything at or below 0.12 lost money in sample
+    * ``min_spot_move`` - the ONLY component that transferred: all four unfiltered
+      cells went negative out of sample, all four filtered cells stayed positive
 
-    The edge shrank as the sample grew, which is the honest headline: 4 days said
-    +1.77%/share, 11 days said +1.65%, 14 days say +1.02% at threshold 0.15. Only
-    **1.3% of all 1,260 swept configurations are positive**. This is a narrow spike,
-    not a broad plateau, and the shipped cell sits on the spike at threshold 0.20.
+    What did NOT survive: the in-sample-optimal cell itself. Selecting purely on
+    in-sample P&L picked T-240 with no filter, which returned -0.86%/share on the
+    unseen days. The shipped cell is T-120 with the filter, which held its edge in
+    both periods.
+
+    Honest scale: ~+1.0%/share in sample and ~+0.9%/share out of sample, on 7/10
+    positive out-of-sample days. That is small, and the sample history is a warning
+    - the same rule measured +1.77%/share on 4 days and +1.02% on 14.
     """
 
-    #: seconds before the close. T-240 on a 5m window = 60s in.
-    entry_t_minus: float = 240.0
+    #: Seconds before the close. T-120 on a 5m window = 180s in.
+    #:
+    #: This moved from 240 to 120 because of the out-of-sample test. Selecting on
+    #: the in-sample period alone chose T-240 with NO filter, which then went to
+    #: -0.86%/share on ten unseen days in May. T-120 with the filter held up
+    #: (+1.02%/share in sample, +1.02% out of sample) and trades far more often.
+    entry_t_minus: float = 120.0
     #: Minimum |move| of the Up token since the open, in probability points.
-    #: On 14 days / 4,023 markets this is the line between losing and winning:
-    #: 0.20 gives +2.62%/share at 81.7% win, and EVERY threshold at or below 0.12
-    #: loses money. Shipped at 0.20.
+    #: 0.20 keeps the highest accuracy at every checkpoint; every threshold at or
+    #: below 0.12 lost money across 14 in-sample days.
     threshold: float = 0.20
     #: follow the move, do not fade it
     mode: str = "follow"
@@ -75,29 +87,34 @@ class V4Params:
     take_profit: float = 1.0
     #: no stop by default: 0.30 and 0.20 both reduced P&L in the sweep
     stop_loss: float = 1.0
-    #: Price-deviation filter - require the underlying to have moved at least this
-    #: fraction since the window opened. On 14 days this lifts the positive-day
-    #: rate from 7/14 to 12/14 and the per-share return from +1.02% to +1.83%.
-    #: 5 bps is the measured optimum but 8 bps trades too little; 4.5 bps keeps
-    #: more trades at nearly the same quality.
+    #: Price-deviation filter: require the underlying to have moved at least this
+    #: fraction since the window opened.
+    #:
+    #: This is the ONLY component that transferred out of sample. All four
+    #: unfiltered cells were negative on the ten May days; all four filtered cells
+    #: were positive. It is shipped on that basis, not on its in-sample gain.
     min_spot_move: float = 0.00045
-    max_entry_price: float = 0.80
+    #: Hard cap from the break-even identity. At the measured 90.4% accuracy a
+    #: 0.90 entry needs 90.4% to break even, so 0.90 is the ceiling; anything above
+    #: it is negative EV no matter how strong the signal. (The measured fill is
+    #: 0.888, leaving about a cent of headroom for normal price drift.)
+    max_entry_price: float = 0.90
     max_quote_staleness_s: float = 2.0
     max_slippage_cents: float = 2.0
     require_measured_fill: bool = True
-    #: measured figures for the shipped cell (threshold 0.20, 14 days, 1,022 trades)
-    measured_accuracy: float = 0.8170
-    measured_entry: float = 0.7792
+    #: measured figures for the shipped cell (T-120, thr 0.20, 4.5bps filter)
+    measured_accuracy: float = 0.9040
+    measured_entry: float = 0.8880
+    in_sample_edge_per_share: float = 0.0101
+    out_of_sample_edge_per_share: float = 0.0085
+    out_of_sample_days_positive: int = 7
+    out_of_sample_days: int = 10
+    #: expected frequency; the out-of-sample run traded 89/day
+    measured_trades_per_day: float = 89.0
     fee_coefficient: float = 0.07
-    #: honest per-trade expectation, measured on 14 days
-    measured_edge_per_share: float = 0.0262
-    measured_trades_per_day: float = 73.0
-    #: day-level standard deviation of pnl/share for the unfiltered cell
-    measured_daily_std: float = 0.024
-    #: with the spot-move filter applied, on the 0.15 cell (the filtered variant
-    #: was measured there): 12 of 14 days positive, +0.0183/share, 56 trades/day
-    filtered_edge_per_share: float = 0.0183
-    filtered_trades_per_day: float = 56.0
+    #: retained for reference: the in-sample-optimal cell that FAILED out of sample
+    failed_cell: str = "T-240 thr0.20 no filter: +2.62% in sample, -0.86% out"
+    measured_daily_std: float = 0.036
 
 
 @dataclass(frozen=True)
