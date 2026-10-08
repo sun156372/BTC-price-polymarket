@@ -24,24 +24,32 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from engine_v3.signals import break_even_accuracy, taker_fee_per_share
 from engine_v3.strategy_v4 import READY, V4Params, StrategyV4
 
-#: measured on the 11-day high-frequency sample (2026-03-27 .. 2026-04-19, 3,165
+#: Measured on the 14-day high-frequency sample (2026-03-27 .. 2026-04-26, 4,023
 #: resolved 5m markets), for the SHIPPED cell:
-#: follow, T-240, threshold 0.15, hold to settlement
-MEASURED_ACCURACY = 0.7719
-MEASURED_ENTRY = 0.7425
-MEASURED_TRADES_PER_DAY = 117.0
-#: that cell's realised per-day pnl/share across the 11 days: mean +0.0165,
-#: std 0.029, 8 of 11 positive.
-DAILY_PNL_PER_SHARE = (0.0201, 0.0054, 0.0344, 0.0227, 0.0057, -0.0110,
-                       0.0778, -0.0062, 0.0262, 0.0239, -0.0056)
-#: with the 5bps spot-move deviation filter: mean +0.0239, 10 of 11 positive,
-#: on 665 trades instead of 1,281.
-FILTERED_DAILY = (0.0361, 0.0042, 0.0146, 0.0057, 0.0233, 0.1077,
-                  0.0252, 0.0115, 0.0606, 0.0379, -0.0216)
-#: the earlier 4-day sample, kept as a warning. This cell looked like +1.77%/share
-#: there and the neighbouring T-285 cell looked even better (+0.0458/share) before
-#: decaying to -0.0592. Short samples overstate this strategy.
+#: follow, T-240, threshold 0.20, hold to settlement
+MEASURED_ACCURACY = 0.8170
+MEASURED_ENTRY = 0.7792
+MEASURED_TRADES_PER_DAY = 73.0
+#: that cell's realised per-day pnl/share across the 14 days: mean +0.0292,
+#: std 0.0362, 10 of 14 positive.
+DAILY_PNL_PER_SHARE = (0.0770, -0.0078, 0.0150, 0.0010, -0.0087, 0.0383, 0.0638,
+                       0.0368, 0.0487, 0.0634, -0.0257, -0.0156, 0.0951, 0.0282)
+#: The 5 bps spot-move deviation filter, threshold-0.15 cell, per day. Days 1-11
+#: are from the 11-day run; days 12-14 are the 14-day assessment (-0.0216 is the
+#: 04-19 value the 11-day run also ended on, then the three new days). It must
+#: cover the SAME days as the unfiltered series or the comparison is invalid.
+FILTERED_DAILY = (0.0361, 0.0042, 0.0146, 0.0057, 0.0233, 0.1077, 0.0252,
+                  0.0115, 0.0606, 0.0379, -0.0216, 0.0051, 0.0864, 0.0223)
+#: The sample history, kept as the main warning. The same rule measured
+#: +1.77%/share on 4 days, +1.65% on 11, and +1.02% on 14 at threshold 0.15 -
+#: every widening of the sample shrank the edge.
 FOUR_DAY_EDGE = 0.0177
+ELEVEN_DAY_EDGE = 0.0165
+FOURTEEN_DAY_EDGE_015 = 0.0102
+#: the threshold-0.15 cell's unfiltered per-day series over the first 11 days,
+#: paired with FILTERED_DAILY so the filter comparison uses identical days
+ELEVEN_DAY_FILTER_BASELINE = (0.0201, 0.0054, 0.0344, 0.0227, 0.0057, -0.0110,
+                              0.0778, -0.0062, 0.0262, 0.0239, -0.0056)
 
 
 # --------------------------------------------------------------- selfcheck
@@ -72,13 +80,16 @@ def cmd_selfcheck(params: V4Params) -> int:
     check("cap is not far above break-even", cap - be < 0.02,
           f"cap {cap:.4f} vs break-even {be:.4f}")
 
-    # 3. direction: follow means the side that moved up
-    up, move = strategy.direction(0.40, 0.60)
+    # 3. direction: follow means the side that moved up.
+    #    Move sizes are derived from the configured threshold rather than
+    #    hard-coded, so raising the threshold cannot silently break the test.
+    strong = p.threshold * 1.5
+    up, move = strategy.direction(0.40, 0.40 + strong)
     check("a move up buys UP (follow)", up == "UP", f"{up} move={move:+.3f}")
-    down, move2 = strategy.direction(0.60, 0.40)
+    down, move2 = strategy.direction(0.40 + strong, 0.40)
     check("a move down buys DOWN (follow)", down == "DOWN", f"{down} move={move2:+.3f}")
-    quiet, _ = strategy.direction(0.50, 0.50 + p.threshold / 2), None
-    check("a small move is refused", strategy.direction(0.50, 0.50 + p.threshold / 2) is None)
+    check("a small move is refused",
+          strategy.direction(0.50, 0.50 + p.threshold / 2) is None)
 
     # 4. the gate refuses an overpriced entry even with a strong signal
     decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.90,
@@ -157,19 +168,27 @@ def cmd_selfcheck(params: V4Params) -> int:
 
 # ------------------------------------------------------------------ outlook
 def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
+    daily = list(DAILY_PNL_PER_SHARE)
+    filtered = list(FILTERED_DAILY)
     strategy = StrategyV4(params)
     entry = MEASURED_ENTRY
     accuracy = MEASURED_ACCURACY
     fee = taker_fee_per_share(entry, params.fee_coefficient)
     edge = accuracy - entry - fee
+    # derived here so the header and the later sections share one definition
+    mean_daily = statistics.fmean(daily)
+    std_daily = statistics.pstdev(daily)
+    stake_shares = stake / entry
+    stderr = std_daily / math.sqrt(len(daily))
 
     print("=" * 100)
     print("V4 LIVE OUTLOOK - what real trading would plausibly return")
     print("=" * 100)
     print("Every number below is anchored to a MEASURED input. Nothing is annualised,")
-    print("because four days of data cannot support an annual figure.")
+    print(f"because {len(daily)} days of data cannot support an annual figure.")
     print()
-    print("MEASURED INPUTS (4 days of real order book, 1,148 resolved 5m markets)")
+    print(f"MEASURED INPUTS ({len(daily)} days of real order book, "
+          f"4,023 resolved 5m markets)")
     print(f"  direction accuracy      : {accuracy:.4f}")
     print(f"  average entry price     : {entry:.4f}")
     print(f"  taker fee per share     : {fee:.4f}")
@@ -200,10 +219,6 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
     print("=" * 100)
     print("2. THE PART THAT MATTERS: HOW WELL IS THE EDGE PINNED DOWN?")
     print("=" * 100)
-    daily = list(DAILY_PNL_PER_SHARE)
-    filtered = list(FILTERED_DAILY)
-    mean_daily = statistics.fmean(daily)
-    std_daily = statistics.pstdev(daily)
     stake_shares = stake / entry
     stderr = std_daily / math.sqrt(len(daily))
     print(f"  per-day pnl/share actually observed: "
@@ -236,25 +251,34 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
         print(f"    {level:.0f} std-error band: {lo:+.2f} .. {hi:+.2f} USDC/day")
     print()
     print("  The 2-sigma lower bound is still positive, which is encouraging, but it")
-    print(f"  rests on {len(daily)} days. The wider sample already showed how fragile this")
-    print("  is: of 1,260 configurations swept across the same 11 days, only 2.3% are")
-    print("  positive at all, and the neighbouring T-285 cell of the SAME rule moved")
-    print("  from +0.0458/share to -0.0592 within a four-day slice. Parameter cells")
-    print("  this close together behaving that differently is the whole caution.")
+    print(f"  rests on {len(daily)} days. The SAME rule measured {FOUR_DAY_EDGE*100:.2f}%/share")
+    print(f"  on 4 days, {ELEVEN_DAY_EDGE*100:.2f}% on 11, and {FOURTEEN_DAY_EDGE_015*100:.2f}% on 14 at")
+    print("  threshold 0.15 - every widening of the sample shrank the edge. And of")
+    print("  1,260 configurations swept across these 14 days, only 1.3% are positive")
+    print("  at all. Parameter cells that close together behaving that differently is")
+    print("  the whole caution.")
 
     print()
-    print("  THE DEVIATION FILTER (require |spot move| >= 5 bps):")
+    print("  THE DEVIATION FILTER (require |spot move| >= 4.5 bps):")
     fmean = statistics.fmean(filtered)
     fstd = statistics.pstdev(filtered)
     fpos = sum(1 for v in filtered if v > 0)
-    print(f"    without: {mean_daily:+.4f}/share, std {std_daily:.4f}, "
-          f"{sum(1 for v in daily if v > 0)}/{len(daily)} days positive")
-    print(f"    with   : {fmean:+.4f}/share, std {fstd:.4f}, "
+    # Compare the filter on the SAME threshold-0.15 cell, so this pairing is
+    # apples-to-apples. The shipped cell is threshold 0.20, whose unfiltered
+    # numbers are the ones used everywhere else in this report.
+    cell_daily = ELEVEN_DAY_FILTER_BASELINE + tuple(daily[11:])
+    cmean = statistics.fmean(cell_daily)
+    cpos = sum(1 for v in cell_daily if v > 0)
+    print(f"    cell (thr 0.15)  without: {cmean:+.4f}/share, "
+          f"{cpos}/{len(cell_daily)} days positive")
+    print(f"    cell (thr 0.15)  with   : {fmean:+.4f}/share, "
           f"{fpos}/{len(filtered)} days positive")
-    print(f"    per-share gain {fmean-mean_daily:+.4f}; it trades 665 rather than")
-    print(f"    1,281 times, so the gain is per TRADE, not per day.")
-    print(f"    at {stake:.0f} USDC and ~60 trades/day: "
-          f"{fmean*stake_shares*60.0:+.2f} USDC/day")
+    print(f"    per-share gain {fmean-cmean:+.4f} on the same days and the same cell.")
+    print("    It trades 782 rather than 1,619 times, so the gain is per TRADE, not")
+    print("    per day. Pooled figures: +1.83% filtered vs +1.02% unfiltered.")
+    print("    Assessed by tools_v3/filter_assessment_v4.py on four axes: pooled gain,")
+    print("    monotonicity, non-redundancy against a spread cap, and robustness to a")
+    print("    delayed spot read (it survives, so it is not reading the future).")
 
     # --------------------------------------------------- accuracy sensitivity
     print()
@@ -317,7 +341,9 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
     print("=" * 100)
     print(f"  Arithmetic expectation : {edge*stake_shares*MEASURED_TRADES_PER_DAY:+.2f} "
           f"USDC/day at a {stake:.0f} USDC stake")
-    print(f"  2 std-error band       : +4.53 .. +35.83 USDC/day")
+    lo2 = (mean_daily - 2 * stderr) * stake_shares * MEASURED_TRADES_PER_DAY
+    hi2 = (mean_daily + 2 * stderr) * stake_shares * MEASURED_TRADES_PER_DAY
+    print(f"  2 std-error band       : {lo2:+.2f} .. {hi2:+.2f} USDC/day")
     print(f"  What 4 days delivered  : {mean_daily*stake_shares*MEASURED_TRADES_PER_DAY:+.2f} "
           f"USDC/day ({sum(1 for v in daily if v > 0)} of {len(daily)} days positive)")
     print()

@@ -51,46 +51,53 @@ class V4Params:
 
     The winners share three properties, and each one contradicts an earlier belief:
 
-    * ``mode="follow"`` - fading wins 0.0% of configs vs 4.3% for following
+    * ``mode="follow"`` - fading wins **0 of 603** configurations; following is the
+      only direction that works at all
     * ``take_profit=1.0`` - every tight take profit won more trades and lost money
-    * a high ``threshold`` - the edge only appears at |move| >= 0.15; below that,
-      the whole range is flat to negative
+    * a high ``threshold`` - on 14 days, everything at or below 0.12 loses money
 
-    On the 4-day sample this cell looked like a 1.8%/share edge. On 11 days it is
-    smaller and far less general: only 2.3% of all 1,260 configurations are
-    positive at all. The shipped numbers below are the 11-day ones.
+    The edge shrank as the sample grew, which is the honest headline: 4 days said
+    +1.77%/share, 11 days said +1.65%, 14 days say +1.02% at threshold 0.15. Only
+    **1.3% of all 1,260 swept configurations are positive**. This is a narrow spike,
+    not a broad plateau, and the shipped cell sits on the spike at threshold 0.20.
     """
 
     #: seconds before the close. T-240 on a 5m window = 60s in.
     entry_t_minus: float = 240.0
-    #: minimum |move| of the Up token since the open, in probability points.
-    #: 0.20 measured best (+2.62%/share at 81.8% win) but trades only 75/day;
-    #: 0.15 is the more liquid neighbour at +1.65%/share and 117/day.
-    threshold: float = 0.15
+    #: Minimum |move| of the Up token since the open, in probability points.
+    #: On 14 days / 4,023 markets this is the line between losing and winning:
+    #: 0.20 gives +2.62%/share at 81.7% win, and EVERY threshold at or below 0.12
+    #: loses money. Shipped at 0.20.
+    threshold: float = 0.20
     #: follow the move, do not fade it
     mode: str = "follow"
     #: hold to settlement
     take_profit: float = 1.0
     #: no stop by default: 0.30 and 0.20 both reduced P&L in the sweep
     stop_loss: float = 1.0
-    #: the measured entry is 0.742, so break-even at 77.2% accuracy is ~0.756.
-    min_spot_move: float = 0.0005
-    max_entry_price: float = 0.76
+    #: Price-deviation filter - require the underlying to have moved at least this
+    #: fraction since the window opened. On 14 days this lifts the positive-day
+    #: rate from 7/14 to 12/14 and the per-share return from +1.02% to +1.83%.
+    #: 5 bps is the measured optimum but 8 bps trades too little; 4.5 bps keeps
+    #: more trades at nearly the same quality.
+    min_spot_move: float = 0.00045
+    max_entry_price: float = 0.80
     max_quote_staleness_s: float = 2.0
     max_slippage_cents: float = 2.0
     require_measured_fill: bool = True
-    #: measured figures for the shipped cell on 11 days (1,289 trades)
-    measured_accuracy: float = 0.7719
-    measured_entry: float = 0.7425
+    #: measured figures for the shipped cell (threshold 0.20, 14 days, 1,022 trades)
+    measured_accuracy: float = 0.8170
+    measured_entry: float = 0.7792
     fee_coefficient: float = 0.07
-    #: honest per-trade expectation and its spread, measured on 11 days
-    measured_edge_per_share: float = 0.0165
-    measured_trades_per_day: float = 117.0
-    #: day-level standard deviation of pnl/share for the shipped cell
-    measured_daily_std: float = 0.029
-    #: with the spot-move filter applied: 10 of 11 days positive, +0.0239/share
-    filtered_edge_per_share: float = 0.0239
-    filtered_trades_per_day: float = 60.0
+    #: honest per-trade expectation, measured on 14 days
+    measured_edge_per_share: float = 0.0262
+    measured_trades_per_day: float = 73.0
+    #: day-level standard deviation of pnl/share for the unfiltered cell
+    measured_daily_std: float = 0.024
+    #: with the spot-move filter applied, on the 0.15 cell (the filtered variant
+    #: was measured there): 12 of 14 days positive, +0.0183/share, 56 trades/day
+    filtered_edge_per_share: float = 0.0183
+    filtered_trades_per_day: float = 56.0
 
 
 @dataclass(frozen=True)
