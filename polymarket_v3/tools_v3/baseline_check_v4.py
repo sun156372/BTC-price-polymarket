@@ -132,11 +132,17 @@ def main(argv=None) -> int:
               f"{'entry':>8}{'GROSS ps':>11}{'NET ps':>10}{'net day':>10}{'days+':>9}")
     print(header)
     print("-" * 96)
-    for label, subset in (
+    # The three out-of-sample slices are reported separately as well as pooled,
+    # because the whole point is the progression across independent samples.
+    periods = (
         ("in-sample", [r for r in rows if r["day"] < SPLIT]),
-        ("out-of-sample", [r for r in rows if r["day"] >= SPLIT]),
+        ("OOS #1 05-01..17", [r for r in rows
+                              if SPLIT <= r["day"] < "2026-05-18"]),
+        ("OOS #2 05-18..24", [r for r in rows if r["day"] >= "2026-05-18"]),
+        ("OOS pooled", [r for r in rows if r["day"] >= SPLIT]),
         ("ALL", rows),
-    ):
+    )
+    for label, subset in periods:
         if not subset:
             continue
         per_day = defaultdict(list)
