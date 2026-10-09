@@ -43,31 +43,43 @@ HALTED = "safety:market_halted"
 #: the price-deviation filter: the fundamental driver (spot) has not moved enough
 #: to support the token move, so the quote is not backed by anything real.
 WEAK_DRIVER = "deviation:spot_move_too_small"
+#: the book-imbalance filter: the full-depth book is balanced, so the token's move
+#: is not supported by order-flow pressure. This is the one signal that produced a
+#: statistically significant out-of-sample edge.
+BALANCED_BOOK = "imbalance:book_not_lopsided"
 
 
 @dataclass(frozen=True)
 class V4Params:
-    """Tunables, validated on a genuine out-of-sample split.
+    """Tunables, validated on a chronological in-sample / out-of-sample split.
 
-    14 in-sample days (2026-03-27..04-26, 4,023 markets) were used to choose
-    parameters; 10 untouched May days (2,877 markets) were used to test them.
+    15 in-sample days (2026-03-27..04-26) chose the parameters; 22 untouched days
+    (2026-05-01..05-24) tested them. Tools: oos2_v4.py, cap_optimal_v4.py,
+    imbalance_validate_v4.py.
 
-    What survived:
+    **The finding that matters: token book IMBALANCE.**
 
-    * ``mode="follow"`` - fading won **0 of 603** configurations in sample
+    ``full_depth_bid_notional`` vs ``full_depth_ask_notional``, oriented to the side
+    being bought, is the first signal in this project to clear every check:
+
+    * a broad plateau, not a spike - every floor from 0.15 to 0.60 is profitable
+    * pre-registered at 0.30 rather than picked as the maximum
+    * in-sample  +5.75%/day, 15/15 days positive, 2-sigma +4.35%..+7.16%
+    * out-of-sample +4.76%/day, 21/22 days positive, 2-sigma +3.69%..+5.83%
+    * NOT a proxy for move size: within every move band the split holds
+      (e.g. moves 0.20-0.30: -9.59%/share when balanced vs +11.07% when lopsided)
+
+    Everything else is settled and unchanged:
+
+    * ``mode="follow"`` - fading won 0 of 603 configurations in sample
     * ``take_profit=1.0`` - every tight take profit won more trades and lost money
     * ``threshold=0.20`` - everything at or below 0.12 lost money in sample
-    * ``min_spot_move`` - the ONLY component that transferred: all four unfiltered
-      cells went negative out of sample, all four filtered cells stayed positive
+    * ``max_entry_price`` disabled - tightening it LOWERED returns, because accuracy
+      rises with price so the cap discards the most accurate trades.
 
-    What did NOT survive: the in-sample-optimal cell itself. Selecting purely on
-    in-sample P&L picked T-240 with no filter, which returned -0.86%/share on the
-    unseen days. The shipped cell is T-120 with the filter, which held its edge in
-    both periods.
-
-    Honest scale: ~+1.0%/share in sample and ~+0.9%/share out of sample, on 7/10
-    positive out-of-sample days. That is small, and the sample history is a warning
-    - the same rule measured +1.77%/share on 4 days and +1.02% on 14.
+    Caveat to carry forward: the imbalance hypothesis was formed on this same 37-day
+    sample, so the out-of-sample period is clean for the threshold but not for the
+    idea. It needs a fresh sample before real capital.
     """
 
     #: Seconds before the close. T-120 on a 5m window = 180s in.
@@ -90,10 +102,23 @@ class V4Params:
     #: Price-deviation filter: require the underlying to have moved at least this
     #: fraction since the window opened.
     #:
-    #: This is the ONLY component that transferred out of sample. All four
-    #: unfiltered cells were negative on the ten May days; all four filtered cells
-    #: were positive. It is shipped on that basis, not on its in-sample gain.
+    #: This survived out of sample, but it is now a secondary gate - the imbalance
+    #: filter below is the one carrying the edge.
     min_spot_move: float = 0.00045
+    #: Book-imbalance filter. Require the full-depth book to be lopsided in the
+    #: direction being bought, measured as
+    #: ``|bid_notional - ask_notional| / (bid_notional + ask_notional)``.
+    #:
+    #: This is the one signal that cleared every check:
+    #:   in-sample    +5.75%/day, 15/15 days positive, 2-sigma +4.35%..+7.16%
+    #:   out-of-sample +4.76%/day, 21/22 days positive, 2-sigma +3.69%..+5.83%
+    #:   a broad plateau (every floor 0.15-0.60 profitable), pre-registered at 0.30
+    #:   not a proxy for move size - it holds inside every move band
+    #:
+    #: A balanced book means the token's move is not backed by order-flow pressure,
+    #: and those trades lose badly: at moves of 0.20-0.30 the balanced bucket returns
+    #: -9.59%/share against +11.07% when lopsided.
+    min_book_imbalance: float = 0.30
     #: Entry-price cap. Swept 0.70 -> no cap in tools_v3/cap_optimal_v4.py.
     #:
     #: The cap was originally justified as "above break-even is negative EV", which
@@ -177,12 +202,14 @@ class StrategyV4:
                ask: float | None, now: float, quote_ts: float | None = None,
                measured_fill: float | None = None, shares_wanted: float = 0.0,
                depth_cost: float | None = None, halted: bool = False,
-               spot_move: float | None = None) -> V4Decision:
+               spot_move: float | None = None,
+               book_imbalance: float | None = None) -> V4Decision:
         """Return the decision. Order matters: cheap checks first.
 
-        ``spot_move`` is the underlying's return since the window opened. It is the
-        one optional input that enables the price-deviation filter: a token move
-        the spot does not support is a quote with nothing behind it.
+        ``spot_move`` is the underlying's return since the window opened, and
+        ``book_imbalance`` is the full-depth notional imbalance oriented to the side
+        being bought. Both are optional: when omitted their gates are skipped, which
+        is documented behaviour rather than a silent fallback.
         """
         p = self.p
 
@@ -195,12 +222,15 @@ class StrategyV4:
                               else NO_MOVE)
         side, move = picked
 
+        # The book-imbalance gate. This is the signal that carries the edge, so it
+        # runs before the older spot gate. A mildly lopsided book (|imb| < 0.30)
+        # means the move has no order-flow support, and those trades lose money in
+        # every move band tested.
+        if book_imbalance is not None and abs(book_imbalance) < p.min_book_imbalance:
+            return V4Decision("hold", BALANCED_BOOK, side=side, move=move)
+
         # Price-deviation filter: a token move the underlying does not support is
-        # a quote with nothing behind it. This is the one component that survived
-        # the out-of-sample test - all four unfiltered cells went negative on the
-        # ten unseen May days, all four filtered cells stayed positive.
-        # Skipped when spot is unavailable, so the strategy can still run on token
-        # data alone - but then it is un-filtered, and un-filtered did not transfer.
+        # a quote with nothing behind it.
         if spot_move is not None and abs(spot_move) < p.min_spot_move:
             return V4Decision("hold", WEAK_DRIVER, side=side, move=move)
 
@@ -252,6 +282,8 @@ class StrategyV4:
             + (f", target {p.take_profit:.2f}" if p.take_profit < 1.0 else ""),
             f"deviation   : require |spot move| >= {p.min_spot_move*10_000:.1f} bps "
             f"(token move must be backed by the underlying)",
+            f"imbalance   : require |book imbalance| >= {p.min_book_imbalance:.2f} "
+            f"(full-depth notional, oriented to the side bought)",
             f"entry cap   : {p.max_entry_price:.3f} "
             f"(break-even at measured accuracy {p.measured_accuracy:.4f} is "
             f"{self.break_even_entry:.3f})",

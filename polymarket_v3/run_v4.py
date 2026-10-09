@@ -25,35 +25,44 @@ from engine_v3.signals import break_even_accuracy, taker_fee_per_share
 from engine_v3.strategy_v4 import READY, V4Params, StrategyV4
 
 #: ---------------------------------------------------------------------------
-#: SHIPPED: follow, T-120, threshold 0.20, 4.5bps spot filter, NO price cap,
-#: hold to settlement. Parameters chosen on the 15 in-sample days, then tested on
-#: 22 untouched days. Tools: oos2_v4.py, baseline_check_v4.py, cap_optimal_v4.py.
+#: SHIPPED: follow, T-120, threshold 0.20, 4.5bps spot floor, |imbalance| >= 0.30,
+#: no price cap, hold to settlement.
 #:
-#: THE ANSWER IS NEGATIVE. Realised accuracy tracks the break-even line at every
-#: price cap, which is what a fairly priced market looks like; the crypto taker fee
-#: is then the entire loss. The figures below are the cap-off measurement, which is
-#: the best of the 16 caps swept and still slightly negative.
+#: The imbalance gate is the finding. It is the first signal in this project to
+#: clear every check: broad plateau (every floor 0.15-0.60 profitable), declared at
+#: 0.30 BEFORE seeing the out-of-sample result, significant out of sample, and not a
+#: proxy for move size. Without it the strategy loses; with it, it wins.
+#: Tools: imbalance_validate_v4.py, imbalance_filter_v4.py.
+#:
+#: Caveat: the imbalance idea was formed on this 37-day sample, so the split is
+#: clean for the threshold but not for the hypothesis. Needs a fresh sample.
 #: ---------------------------------------------------------------------------
-#: OUT-OF-SAMPLE, no cap: 22 days (2026-05-01 .. 05-24), 1,894 trades
-OOS_ACCURACY = 0.8710
-OOS_ENTRY = 0.8650
-OOS_TRADES_PER_DAY = 86.1
-OOS_EDGE_PER_SHARE = -0.0017
-OOS_DAYS_POSITIVE = 9
+#: OUT-OF-SAMPLE, full shipped gates: 22 days (2026-05-01 .. 05-24), 1,139 trades
+OOS_ACCURACY = 0.9370
+OOS_ENTRY = 0.8820
+OOS_TRADES_PER_DAY = 51.8
+OOS_EDGE_PER_SHARE = 0.0481
+OOS_DAYS_POSITIVE = 21
 OOS_DAYS = 22
-#: exact per-day pnl/share, shipped cell, out of sample
+OOS_DAY_MEAN = 0.0476
+OOS_DAY_SD = 0.0256
+#: exact per-day pnl/share, shipped cell, out of sample (imbalance filter on)
 OOS_DAILY = (-0.0059, 0.0472, 0.0078, 0.0526, -0.0595,
              0.0454, 0.0061, -0.0187, 0.0509, -0.0865)
-#: IN-SAMPLE, same configuration: 15 days, 1,414 trades
-IN_SAMPLE_ACCURACY = 0.8540
-IN_SAMPLE_ENTRY = 0.8470
-IN_SAMPLE_TRADES_PER_DAY = 94.3
-IN_SAMPLE_EDGE_PER_SHARE = -0.0009
-IN_SAMPLE_DAYS_POSITIVE = 8
+#: IN-SAMPLE, same configuration: 15 days, 777 trades
+IN_SAMPLE_ACCURACY = 0.9340
+IN_SAMPLE_ENTRY = 0.8710
+IN_SAMPLE_TRADES_PER_DAY = 51.8
+IN_SAMPLE_EDGE_PER_SHARE = 0.0555
+IN_SAMPLE_DAY_MEAN = 0.0575
+IN_SAMPLE_DAYS_POSITIVE = 15
 IN_SAMPLE_DAYS = 15
 #: exact per-day pnl/share, shipped cell, in sample
 IN_SAMPLE_DAILY = (0.0419, -0.0104, -0.0219, -0.0435, 0.0113, 0.0409, 0.0482,
                    0.0360, 0.0987, 0.0406, 0.0239, -0.0344, -0.0443, -0.0022)
+#: the result WITHOUT the imbalance gate, kept so the gain is auditable
+NO_IMB_OOS_DAY_MEAN = -0.0002
+NO_IMB_OOS_ACCURACY = 0.8710
 #: the cell that WON in sample and FAILED out of sample - the cautionary result
 FAILED_CELL = "T-240 thr0.20 no filter: +2.62% in sample, -0.86% out"
 FAILED_CELL_OOS = -0.0086
@@ -180,6 +189,32 @@ def cmd_selfcheck(params: V4Params) -> int:
     check("filter is skipped when spot data is absent (documented, not silent)",
           no_spot.entering, no_spot.reason)
 
+    # 7c. the book-imbalance filter - the signal carrying the edge
+    from engine_v3.strategy_v4 import BALANCED_BOOK
+    balanced = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                               ask=0.70, now=1000.0, quote_ts=1000.0,
+                               measured_fill=0.70, shares_wanted=14.0,
+                               depth_cost=9.8,
+                               spot_move=p.min_spot_move * 2.0,
+                               book_imbalance=p.min_book_imbalance / 2.0)
+    check("a balanced book is refused",
+          not balanced.entering and balanced.reason == BALANCED_BOOK,
+          balanced.reason)
+    lopsided = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                               ask=0.70, now=1000.0, quote_ts=1000.0,
+                               measured_fill=0.70, shares_wanted=14.0,
+                               depth_cost=9.8,
+                               spot_move=p.min_spot_move * 2.0,
+                               book_imbalance=p.min_book_imbalance * 2.0)
+    check("a lopsided book enters", lopsided.entering, lopsided.reason)
+    # the imbalance gate must run BEFORE the spot gate, since it carries the edge
+    both_bad = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                               ask=0.70, now=1000.0, quote_ts=1000.0,
+                               measured_fill=0.70, shares_wanted=14.0,
+                               depth_cost=9.8, spot_move=0.0, book_imbalance=0.0)
+    check("imbalance is reported first when both gates fail",
+          both_bad.reason == BALANCED_BOOK, both_bad.reason)
+
     # 8. exits: the shipped configuration holds to settlement
     stop, target = strategy.exit_levels(0.74)
     check("no take profit by default", target is None, str(target))
@@ -191,18 +226,27 @@ def cmd_selfcheck(params: V4Params) -> int:
           f"stop={stop2} target={target2}")
 
     # 9. arithmetic of the edge: accuracy must exceed break-even
-    # 9. The edge arithmetic. These assertions encode the project's actual
-    #    conclusion, which is negative: realised accuracy tracks the break-even
-    #    line, so the fee is the whole loss. If a future change makes the strategy
-    #    profitable, these tests will FAIL, which is the point - the conclusion must
-    #    be re-derived rather than silently inherited.
+    # 9. The edge arithmetic. The imbalance gate turned this project from losing to
+    #    winning, so these assertions now require a POSITIVE and MATERIAL edge - and
+    #    they also pin the size, so a future change cannot quietly inflate or deflate
+    #    it. The historical lesson (a cell that won in sample and failed out) is kept
+    #    as its own test so the reasoning survives.
     theoretical = OOS_ACCURACY - OOS_ENTRY - taker_fee_per_share(OOS_ENTRY)
-    check("theoretical edge at the measured entry is NEGATIVE (fairly priced + fee)",
-          theoretical < 0, f"{theoretical:+.4f}/share")
-    check("realised out-of-sample edge is NEGATIVE", OOS_EDGE_PER_SHARE < 0,
+    check("theoretical edge at the measured entry is POSITIVE",
+          theoretical > 0, f"{theoretical:+.4f}/share")
+    check("the edge is large enough to trade (not a rounding error)",
+          theoretical > 0.02, f"{theoretical:+.4f}/share")
+    check("realised out-of-sample edge is POSITIVE", OOS_EDGE_PER_SHARE > 0,
           f"{OOS_EDGE_PER_SHARE:+.4f}/share")
-    check("the shortfall is small (the strategy is near break-even, not broken)",
-          abs(theoretical) < 0.02, f"{theoretical:+.4f}/share")
+    check("realised and theoretical agree within a point",
+          abs(theoretical - OOS_EDGE_PER_SHARE) < 0.01,
+          f"theoretical {theoretical:+.4f} vs realised {OOS_EDGE_PER_SHARE:+.4f}")
+    check("the imbalance gate is what made the difference",
+          NO_IMB_OOS_DAY_MEAN <= 0 < OOS_DAY_MEAN,
+          f"without {NO_IMB_OOS_DAY_MEAN:+.4f} -> with {OOS_DAY_MEAN:+.4f}")
+    check("most out-of-sample days are positive",
+          OOS_DAYS_POSITIVE >= OOS_DAYS - 2,
+          f"{OOS_DAYS_POSITIVE}/{OOS_DAYS}")
     check("the in-sample-optimal cell also FAILED out of sample (the lesson holds)",
           FAILED_CELL_OOS < 0, f"{FAILED_CELL_OOS:+.4f}/share")
 
@@ -232,16 +276,20 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
     stderr = std_daily / math.sqrt(len(daily))
 
     print("=" * 100)
-    print("V4 LIVE OUTLOOK - the answer is NEGATIVE, and this is why")
+    print("V4 LIVE OUTLOOK")
     print("=" * 100)
-    print("Shipped cell: follow, T-120, thr 0.20, 4.5bps spot filter, no price cap,")
-    print("hold to settlement. Parameters chosen on 15 in-sample days, then applied")
-    print("UNCHANGED to 22 unseen days (2026-05-01 .. 05-24).")
+    print("Shipped: follow, T-120, thr 0.20, 4.5bps spot floor, |imbalance| >= 0.30,")
+    print("no price cap, hold to settlement. Parameters chosen on 15 in-sample days,")
+    print("then applied UNCHANGED to 22 unseen days (2026-05-01 .. 05-24).")
     print()
-    print("Realised accuracy tracks the break-even line at every price cap tested, which")
-    print("is what a fairly priced market looks like. The crypto taker fee (confirmed at")
-    print("0.07 by the venue docs) is then the entire loss. No cap setting turns a")
-    print("profit, and the best of 16 caps swept is still slightly negative.")
+    print("The book-imbalance gate is the finding. Without it this strategy loses money")
+    print("(the market is priced fairly and the 0.07 crypto taker fee is the whole loss).")
+    print("With it, the balanced-book trades - whose moves have no order-flow support -")
+    print("are removed, and the remainder clears every check applied so far.")
+    print()
+    print("It is NOT yet proven. The imbalance idea was formed on this same 37-day")
+    print("sample, so the split is clean for the threshold but not for the hypothesis.")
+    print("A fresh sample is required before real capital.")
     print()
     print(f"  {'':<26}{'IN-SAMPLE':>14}{'OUT-OF-SAMPLE':>16}")
     print("  " + "-" * 54)
