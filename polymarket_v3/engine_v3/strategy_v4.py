@@ -187,11 +187,12 @@ class StrategyV4:
                               else NO_MOVE)
         side, move = picked
 
-        # Price-deviation filter. Measured on 11 days: requiring |spot move| >=
-        # 5bps lifted the positive-day rate from 8/11 to 10/11 and the per-share
-        # return from +0.0168 to +0.0239. It trades less (665 vs 1,281) and the
-        # gain is per trade, not per day. Skipped when spot is unavailable so the
-        # strategy still runs on token data alone - but then it is un-filtered.
+        # Price-deviation filter: a token move the underlying does not support is
+        # a quote with nothing behind it. This is the one component that survived
+        # the out-of-sample test - all four unfiltered cells went negative on the
+        # ten unseen May days, all four filtered cells stayed positive.
+        # Skipped when spot is unavailable, so the strategy can still run on token
+        # data alone - but then it is un-filtered, and un-filtered did not transfer.
         if spot_move is not None and abs(spot_move) < p.min_spot_move:
             return V4Decision("hold", WEAK_DRIVER, side=side, move=move)
 
