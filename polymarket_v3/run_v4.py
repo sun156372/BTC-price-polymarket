@@ -25,37 +25,32 @@ from engine_v3.signals import break_even_accuracy, taker_fee_per_share
 from engine_v3.strategy_v4 import READY, V4Params, StrategyV4
 
 #: ---------------------------------------------------------------------------
-#: The SHIPPED cell is: follow, T-120, threshold 0.20, 4.5bps spot filter,
-#: hold to settlement. It was chosen on the 14 in-sample days and then tested on
-#: 10 untouched May days (tools_v3/oos_v4.py).
+#: SHIPPED: follow, T-120, threshold 0.20, 4.5bps spot filter, NO price cap,
+#: hold to settlement. Parameters chosen on the 15 in-sample days, then tested on
+#: 22 untouched days. Tools: oos2_v4.py, baseline_check_v4.py, cap_optimal_v4.py.
 #:
-#: The out-of-sample figures below are the ones to plan against. The in-sample
-#: series is kept only to show how much the fitting period flatters the result.
+#: THE ANSWER IS NEGATIVE. Realised accuracy tracks the break-even line at every
+#: price cap, which is what a fairly priced market looks like; the crypto taker fee
+#: is then the entire loss. The figures below are the cap-off measurement, which is
+#: the best of the 16 caps swept and still slightly negative.
 #: ---------------------------------------------------------------------------
-#: OUT-OF-SAMPLE, EXACT, WITH THE ENTRY CAP APPLIED (the real shipped behaviour).
-#: 10 unseen days (2026-05-01 .. 05-17), 385 trades. Computed by
-#: tools_v3/oos_daily_v4.py.
-#:
-#: Note the trade count: the uncapped grid run showed 890 trades at +0.85%/share,
-#: but the 0.90 entry cap rejects more than half of them, leaving 385 at
-#: +0.39%/share. The cap is a deliberate negative-EV guard, so this lower figure
-#: is the honest one to plan against.
-OOS_ACCURACY = 0.9130
-OOS_ENTRY = 0.8880
-OOS_TRADES_PER_DAY = 38.5
-OOS_EDGE_PER_SHARE = 0.0039
-OOS_DAYS_POSITIVE = 6
-OOS_DAYS = 10
+#: OUT-OF-SAMPLE, no cap: 22 days (2026-05-01 .. 05-24), 1,894 trades
+OOS_ACCURACY = 0.8710
+OOS_ENTRY = 0.8650
+OOS_TRADES_PER_DAY = 86.1
+OOS_EDGE_PER_SHARE = -0.0017
+OOS_DAYS_POSITIVE = 9
+OOS_DAYS = 22
 #: exact per-day pnl/share, shipped cell, out of sample
 OOS_DAILY = (-0.0059, 0.0472, 0.0078, 0.0526, -0.0595,
              0.0454, 0.0061, -0.0187, 0.0509, -0.0865)
-#: IN-SAMPLE, SAME CONFIGURATION AND SAME CAP: 14 days, 759 trades
-IN_SAMPLE_ACCURACY = 0.9040
-IN_SAMPLE_ENTRY = 0.8880
-IN_SAMPLE_TRADES_PER_DAY = 54.0
-IN_SAMPLE_EDGE_PER_SHARE = 0.0132
+#: IN-SAMPLE, same configuration: 15 days, 1,414 trades
+IN_SAMPLE_ACCURACY = 0.8540
+IN_SAMPLE_ENTRY = 0.8470
+IN_SAMPLE_TRADES_PER_DAY = 94.3
+IN_SAMPLE_EDGE_PER_SHARE = -0.0009
 IN_SAMPLE_DAYS_POSITIVE = 8
-IN_SAMPLE_DAYS = 14
+IN_SAMPLE_DAYS = 15
 #: exact per-day pnl/share, shipped cell, in sample
 IN_SAMPLE_DAILY = (0.0419, -0.0104, -0.0219, -0.0435, 0.0113, 0.0409, 0.0482,
                    0.0360, 0.0987, 0.0406, 0.0239, -0.0344, -0.0443, -0.0022)
@@ -93,12 +88,16 @@ def cmd_selfcheck(params: V4Params) -> int:
     check("fee vanishes at the extremes",
           taker_fee_per_share(0.001) < 1e-4 and taker_fee_per_share(0.999) < 1e-4)
 
-    # 2. the cap must sit above the measured entry but below the implied break-even
+    # 2. the cap. The sweep in tools_v3/cap_optimal_v4.py showed that tightening it
+    #    LOWERS returns, because accuracy rises with price and the cap discards the
+    #    most accurate trades. So no cap is the shipped design, and the test asserts
+    #    the two valid states rather than assuming a binding cap.
     cap = p.max_entry_price
     be = strategy.break_even_entry
-    check("cap is above the measured entry price", cap > OOS_ENTRY,
+    check("cap is above the measured entry price", cap >= OOS_ENTRY,
           f"cap {cap} vs entry {OOS_ENTRY}")
-    check("cap is not far above break-even", cap - be < 0.02,
+    check("cap is either disabled (>=1.0) or tight against break-even",
+          cap >= 1.0 or cap - be < 0.02,
           f"cap {cap:.4f} vs break-even {be:.4f}")
 
     # 3. direction: follow means the side that moved up.
@@ -112,25 +111,33 @@ def cmd_selfcheck(params: V4Params) -> int:
     check("a small move is refused",
           strategy.direction(0.50, 0.50 + p.threshold / 2) is None)
 
-    # 4. the gate refuses an overpriced entry even with a strong signal.
-    #    Prices are derived from the configured cap, so moving the cap cannot make
-    #    this test silently vacuous.
-    pricey = min(0.995, p.max_entry_price + 0.02)
-    decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
-                               ask=pricey, now=1000.0, quote_ts=1000.0,
-                               measured_fill=pricey, shares_wanted=10.0,
-                               depth_cost=pricey * 10.0)
-    check("expensive entry refused", not decision.entering
+    # 4. the cap gate. With the cap disabled there is nothing to refuse, so the
+    #    test switches to asserting the DISABLED behaviour explicitly rather than
+    #    silently passing on a vacuous bound. Both branches are exercised by
+    #    constructing a temporary params object with a binding cap.
+    from dataclasses import replace as _replace
+    strict = V4Params(**{**params.__dict__, "max_entry_price": 0.88})
+    strict_strategy = StrategyV4(strict)
+    decision = strict_strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                                      ask=0.95, now=1000.0, quote_ts=1000.0,
+                                      measured_fill=0.95, shares_wanted=10.0,
+                                      depth_cost=9.5)
+    check("an over-cap entry is refused when a cap is set", not decision.entering
           and decision.reason == "execution:entry_above_cap",
-          f"{decision.reason} at {pricey:.3f} vs cap {p.max_entry_price:.3f}")
-    # and just inside the cap it must still enter
-    inside = max(0.05, p.max_entry_price - 0.02)
-    decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
-                               ask=inside, now=1000.0, quote_ts=1000.0,
-                               measured_fill=inside, shares_wanted=10.0,
-                               depth_cost=inside * 10.0)
-    check("an entry just inside the cap is allowed", decision.entering,
-          f"{decision.reason} at {inside:.3f} vs cap {p.max_entry_price:.3f}")
+          f"{decision.reason} at 0.950 vs cap 0.880")
+    decision = strict_strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                                      ask=0.86, now=1000.0, quote_ts=1000.0,
+                                      measured_fill=0.86, shares_wanted=10.0,
+                                      depth_cost=8.6)
+    check("an entry inside the cap is allowed", decision.entering,
+          f"{decision.reason} at 0.860 vs cap 0.880")
+    if p.max_entry_price >= 1.0:
+        decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.40 + strong,
+                                   ask=0.95, now=1000.0, quote_ts=1000.0,
+                                   measured_fill=0.95, shares_wanted=10.0,
+                                   depth_cost=9.5)
+        check("with the cap disabled a 0.95 entry is NOT refused by the cap",
+              decision.entering, f"{decision.reason} at 0.950")
 
     # 5. the gate refuses a modelled fill
     decision = strategy.decide(open_up_mid=0.40, entry_up_mid=0.75, ask=0.70,
@@ -184,22 +191,19 @@ def cmd_selfcheck(params: V4Params) -> int:
           f"stop={stop2} target={target2}")
 
     # 9. arithmetic of the edge: accuracy must exceed break-even
-    # 9. arithmetic of the edge, computed from the constants rather than hardcoded.
-    #    The THEORETICAL edge comes from the break-even identity; the REALISED
-    #    out-of-sample edge is what those trades actually paid, after the entry cap
-    #    and the fill distribution. They differ, and the gap is the honest measure
-    #    of how much a small sample can drift from the arithmetic.
+    # 9. The edge arithmetic. These assertions encode the project's actual
+    #    conclusion, which is negative: realised accuracy tracks the break-even
+    #    line, so the fee is the whole loss. If a future change makes the strategy
+    #    profitable, these tests will FAIL, which is the point - the conclusion must
+    #    be re-derived rather than silently inherited.
     theoretical = OOS_ACCURACY - OOS_ENTRY - taker_fee_per_share(OOS_ENTRY)
-    check("theoretical edge at the measured entry is positive",
-          theoretical > 0, f"{theoretical:+.4f}/share")
-    check("theoretical edge is thin (<3 points)",
-          theoretical < 0.03, f"{theoretical:+.4f}/share")
-    check("realised out-of-sample edge is positive",
-          OOS_EDGE_PER_SHARE > 0, f"{OOS_EDGE_PER_SHARE:+.4f}/share")
-    check("realised edge is smaller than theoretical (small sample drift)",
-          OOS_EDGE_PER_SHARE < theoretical,
-          f"realised {OOS_EDGE_PER_SHARE:+.4f} vs theoretical {theoretical:+.4f}")
-    check("the in-sample-optimal cell FAILED out of sample (the lesson holds)",
+    check("theoretical edge at the measured entry is NEGATIVE (fairly priced + fee)",
+          theoretical < 0, f"{theoretical:+.4f}/share")
+    check("realised out-of-sample edge is NEGATIVE", OOS_EDGE_PER_SHARE < 0,
+          f"{OOS_EDGE_PER_SHARE:+.4f}/share")
+    check("the shortfall is small (the strategy is near break-even, not broken)",
+          abs(theoretical) < 0.02, f"{theoretical:+.4f}/share")
+    check("the in-sample-optimal cell also FAILED out of sample (the lesson holds)",
           FAILED_CELL_OOS < 0, f"{FAILED_CELL_OOS:+.4f}/share")
 
     failed = 0
@@ -228,12 +232,16 @@ def cmd_outlook(params: V4Params, stake: float, equity: float) -> int:
     stderr = std_daily / math.sqrt(len(daily))
 
     print("=" * 100)
-    print("V4 LIVE OUTLOOK - anchored on OUT-OF-SAMPLE data")
+    print("V4 LIVE OUTLOOK - the answer is NEGATIVE, and this is why")
     print("=" * 100)
-    print("The shipped cell (follow, T-120, thr 0.20, 4.5bps spot filter) was chosen on")
-    print("14 in-sample days, then applied UNCHANGED to 10 unseen May days. Everything")
-    print("headline below is from those 10 unseen days. In-sample figures are shown only")
-    print("to expose how much the fitting period inflates the result.")
+    print("Shipped cell: follow, T-120, thr 0.20, 4.5bps spot filter, no price cap,")
+    print("hold to settlement. Parameters chosen on 15 in-sample days, then applied")
+    print("UNCHANGED to 22 unseen days (2026-05-01 .. 05-24).")
+    print()
+    print("Realised accuracy tracks the break-even line at every price cap tested, which")
+    print("is what a fairly priced market looks like. The crypto taker fee (confirmed at")
+    print("0.07 by the venue docs) is then the entire loss. No cap setting turns a")
+    print("profit, and the best of 16 caps swept is still slightly negative.")
     print()
     print(f"  {'':<26}{'IN-SAMPLE':>14}{'OUT-OF-SAMPLE':>16}")
     print("  " + "-" * 54)

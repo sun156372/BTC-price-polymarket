@@ -94,23 +94,31 @@ class V4Params:
     #: unfiltered cells were negative on the ten May days; all four filtered cells
     #: were positive. It is shipped on that basis, not on its in-sample gain.
     min_spot_move: float = 0.00045
-    #: Hard cap from the break-even identity. At the measured 90.4% accuracy a
-    #: 0.90 entry needs 90.4% to break even, so 0.90 is the ceiling; anything above
-    #: it is negative EV no matter how strong the signal. (The measured fill is
-    #: 0.888, leaving about a cent of headroom for normal price drift.)
-    max_entry_price: float = 0.90
+    #: Entry-price cap. Swept 0.70 -> no cap in tools_v3/cap_optimal_v4.py.
+    #:
+    #: The cap was originally justified as "above break-even is negative EV", which
+    #: is true for a trade of FIXED accuracy. But accuracy RISES with price - the
+    #: trades a 0.90 cap rejects win 94.9% - so tightening the cap throws away the
+    #: most accurate trades and LOWERS the per-share result. Out-of-sample pooled:
+    #: 0.88 -> -1.11%, 0.90 -> -0.54%, no cap -> -0.17%. The cap is therefore off.
+    #:
+    #: This is not good news. The best setting is still slightly negative. Realised
+    #: accuracy tracks the break-even line at every cap (no cap: needs 87.32%,
+    #: realised 87.1%), which is the signature of a fairly priced market: there is
+    #: no mispricing to exploit, and the fee is the entire loss.
+    max_entry_price: float = 1.0
     max_quote_staleness_s: float = 2.0
     max_slippage_cents: float = 2.0
     require_measured_fill: bool = True
-    #: measured figures for the shipped cell (T-120, thr 0.20, 4.5bps filter)
-    measured_accuracy: float = 0.9040
-    measured_entry: float = 0.8880
-    in_sample_edge_per_share: float = 0.0101
-    out_of_sample_edge_per_share: float = 0.0085
-    out_of_sample_days_positive: int = 7
-    out_of_sample_days: int = 10
-    #: expected frequency; the out-of-sample run traded 89/day
-    measured_trades_per_day: float = 89.0
+    #: measured on the full 37-day sample with the cap off (out-of-sample slice)
+    measured_accuracy: float = 0.8710
+    measured_entry: float = 0.8650
+    in_sample_edge_per_share: float = -0.0009
+    out_of_sample_edge_per_share: float = -0.0017
+    out_of_sample_days_positive: int = 9
+    out_of_sample_days: int = 22
+    #: expected frequency with the cap off; out-of-sample traded 86/day
+    measured_trades_per_day: float = 86.0
     fee_coefficient: float = 0.07
     #: retained for reference: the in-sample-optimal cell that FAILED out of sample
     failed_cell: str = "T-240 thr0.20 no filter: +2.62% in sample, -0.86% out"
