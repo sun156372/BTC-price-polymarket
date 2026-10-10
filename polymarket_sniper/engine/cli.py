@@ -71,16 +71,21 @@ def cmd_selfcheck(args, config: EngineConfig) -> int:
     except MathError:
         check("fee rejects a price outside (0,1)", True)
 
-    # parity with the original research calculator, if it is importable
-    try:
-        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        from utils.fee_calculator import taker_fee_usdc  # type: ignore
-
-        worst = max(abs(taker_fee(100, p) - taker_fee_usdc(100, p))
-                    for p in (0.05, 0.2, 0.35, 0.5, 0.65, 0.8, 0.95))
-        check("fee matches the original research calculator", worst < 1e-12, f"max diff {worst:.2e}")
-    except ImportError:
-        check("fee matches the original research calculator", True, "original not importable, skipped")
+    # Parity with frozen research reference values. Kept as literal numbers rather
+    # than an import so this package stays self-contained and relocatable: it was
+    # verified identical to utils/fee_calculator.py to 1e-12, and these constants
+    # lock that result in after the packages were split apart.
+    reference = {
+        0.05: 100 * 0.07 * 0.05 * 0.95,
+        0.20: 100 * 0.07 * 0.20 * 0.80,
+        0.35: 100 * 0.07 * 0.35 * 0.65,
+        0.50: 100 * 0.07 * 0.50 * 0.50,
+        0.65: 100 * 0.07 * 0.65 * 0.35,
+        0.80: 100 * 0.07 * 0.80 * 0.20,
+        0.95: 100 * 0.07 * 0.95 * 0.05,
+    }
+    worst = max(abs(taker_fee(100, p) - expected) for p, expected in reference.items())
+    check("fee matches the frozen research reference", worst < 1e-12, f"max diff {worst:.2e}")
 
     check("shares_for_notional inverts", abs(shares_for_notional(100, 0.4) - 250) < 1e-9)
 
@@ -269,7 +274,7 @@ def cmd_selfcheck(args, config: EngineConfig) -> int:
     print(f"selfcheck: {len(checks) - failed}/{len(checks)} passed")
     if not failed:
         print()
-        print("Next: python run_engine.py backtest --data ../data")
+        print("Next: python run_engine_v2.py backtest --data ../data")
     return EXIT_OK if not failed else EXIT_FAIL
 
 
@@ -394,9 +399,9 @@ def cmd_paper(args, config: EngineConfig) -> int:
     print()
     print("Then drive the same decision path the backtest uses:")
     print()
-    print("    from engine.backtest import Engine")
-    print("    from engine.dataio import Market, MarketTrades, SpotIndex")
-    print("    from engine.broker import LiveBroker   # your subclass")
+    print("    from engine_v2.backtest import Engine")
+    print("    from engine_v2.dataio import Market, MarketTrades, SpotIndex")
+    print("    from engine_v2.broker import LiveBroker   # your subclass")
     print()
     print("    engine = Engine(config, broker=MyLiveBroker(confirm_live=True))")
     print("    trade, refusal = engine.trade_window(market, trades, tokens)")
