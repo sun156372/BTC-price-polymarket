@@ -33,12 +33,12 @@ import pyarrow.parquet as pq
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from engine_v4.strategy import V4Params  # noqa: E402
 from paths import resolve_data_root  # noqa: E402
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def _resolve_default_root() -> str:
     """Dataset location, resolved by tools_v4/paths.py (see its docstring)."""
     return resolve_data_root(required=False) or 'micro_v3'
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import backtest as B  # noqa: E402
 import slim  # noqa: E402

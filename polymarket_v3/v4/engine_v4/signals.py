@@ -1,21 +1,18 @@
 """Fee and break-even arithmetic for the shipped V4 strategy.
 
-This module is deliberately tiny and has **no dependencies**, not even on the rest of
-this package. It replaces the older ``signals`` module from the research tree, which
-carried the V3 signal machinery (``Standardiser``, ``score``, ``modelled_entry_price``)
-and pulled in a CSV data reader for classes the shipped strategy never touches. Those
-parts were removed rather than copied, because shipping dead code into a live trading
-package is how a live package acquires bugs it never exercises.
+Deliberately tiny, with no dependencies - not even on the rest of this package. It
+replaces the older ``signals`` module from the research tree, which carried the V3
+signal machinery and a CSV data reader for classes the shipped strategy never
+touches. Shipping dead code into a live trading package is how a live package
+acquires bugs that nothing exercises.
 
-Fee model, confirmed against the venue documentation
-----------------------------------------------------
-::
+Fee model, confirmed against the venue documentation::
 
     fee = C x feeRate x p x (1 - p)
 
 with ``feeRate = 0.07`` for the Crypto category, charged to takers only. The fee is
-symmetric in price (a 0.30 trade and a 0.70 trade cost the same dollars) and peaks at
-p = 0.50. Settlement is not a trade, so no exit fee is charged.
+symmetric in price (a 0.30 trade and a 0.70 trade cost the same dollars) and peaks
+at p = 0.50. Settlement is not a trade, so no exit fee is charged.
 """
 from __future__ import annotations
 

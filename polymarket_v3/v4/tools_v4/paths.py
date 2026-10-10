@@ -4,18 +4,17 @@
     root = resolve_data_root(args.root)
 
 The research tools each computed the dataset location from their own file depth
-(``dirname`` three times). That works while they sit beside the dataset in a research
-directory and breaks the moment they are copied anywhere else, which is exactly what
-packaging does. The symptom is quiet: the tool starts, finds nothing, and reports
-"no data".
+(``dirname`` three times). That works while they sit beside the dataset and breaks
+the moment they are copied anywhere else, which is exactly what packaging does. The
+symptom is quiet: the tool starts, finds nothing, and reports "no data".
 
 Resolution order, first hit wins:
 
 1. an explicit ``--root`` argument
 2. the ``V4_DATA_ROOT`` environment variable
-3. ``<v4>/../<name>``  - dataset beside the package
-4. ``<v4>/../../<name>``  - dataset at the workspace root
-5. ``<v4>/<name>``  - dataset inside the package
+3. ``<package>/../<name>``   - dataset beside the package
+4. ``<package>/../../<name>``  - dataset at the workspace root
+5. ``<package>/<name>``     - dataset inside the package
 
 ``<name>`` defaults to ``micro_v3``, the extraction directory produced by the archive
 tool. Nothing is cached, so relocating the data mid-session is picked up immediately.
@@ -53,8 +52,7 @@ def resolve_data_root(explicit: str | None = None, name: str = "micro_v3",
         if required:
             raise SystemExit(
                 f"--root {explicit} is not a directory.\n"
-                f"Point it at the extracted dataset, e.g. "
-                f"--root <workspace>/{name}")
+                f"Point it at the extracted dataset, e.g. --root <workspace>/{name}")
         return None
     for path in candidates(name):
         if path and os.path.isdir(path):
@@ -66,8 +64,8 @@ def resolve_data_root(explicit: str | None = None, name: str = "micro_v3",
         "Cannot find the offline dataset. Looked in:\n  "
         f"{tried}\n\n"
         "Fix it with either:\n"
-        f"  --root <path to the extracted dataset>\n"
-        f"  set V4_DATA_ROOT=<path>\n\n"
+        "  --root <path to the extracted dataset>\n"
+        "  set V4_DATA_ROOT=<path>\n\n"
         "If you have never built it, this package cannot be verified offline; the "
         "live paper loop (run_live_v4.py) needs no local dataset.")
 

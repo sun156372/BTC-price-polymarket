@@ -5,13 +5,13 @@
 WHAT IT IS
 ----------
 ``full_depth_bid_notional`` and ``full_depth_ask_notional`` are ready-made scalar
-columns in the dataset: the total notional resting on each side of the token's book.
-Their normalised difference is the feature:
+columns in the dataset: the total notional resting on each side of the token book.
+Their normalised difference is the feature::
 
     imbalance = (bid_notional - ask_notional) / (bid_notional + ask_notional)
 
 ``+1`` means every dollar of resting liquidity is a bid; ``-1`` means every dollar is
-an ask. Measured on 44 days / 12,670 markets, its relationship to winning is U-shaped:
+an ask. Measured on 44 days / 12,670 markets, its relationship to winning is U-shaped::
 
     imbalance decile   1     2     3     4     5     6     7     8
     win rate (%)     93.6  93.1  79.5  67.9  70.3  75.1  93.3  94.4
@@ -22,15 +22,13 @@ the entry is around 0.79 while the win rate is only about 70%. Hence the gate
 
 ORIENTATION, WHICH IS EASY TO GET WRONG
 ---------------------------------------
-The raw feature is in UP-token space. When the strategy buys DOWN, the sign must be
+The raw feature is in UP-token space. When the strategy buys DOWN the sign must be
 FLIPPED, because a book that is bid-heavy on the UP token is ask-heavy on the DOWN
-token. ``orient`` does that, and it is the only sanctioned way to do it. A gate on
-``|imbalance|`` looks symmetric and would silently accept a sign error, so the sign
+token. ``orient`` does that and is the only sanctioned way to do it. A gate on
+``|imbalance|`` looks symmetric and would silently accept a sign error, so the
 convention is asserted in ``tools_v4/review.py``.
 """
 from __future__ import annotations
-
-import os
 
 import pyarrow.parquet as pq
 
@@ -62,11 +60,11 @@ def token_imbalance(root: str, checkpoint_s: float = 120.0,
     """Map ``market_id`` -> imbalance at the decision tick.
 
     Indexed by ``market_id`` because ``window_key`` is corrupted in this dataset (it
-    holds the literal string ``"et"``); joining on the obvious-looking key yields zero
-    matches. The decision tick is the one nearest ``checkpoint_s`` seconds before the
-    close, matching ``Market.tick_at_t_minus`` in the loader.
+    holds the literal string ``"et"``), so joining on the obvious-looking key yields
+    zero matches. The decision tick is the one nearest ``checkpoint_s`` seconds before
+    the close, matching ``Market.tick_at_t_minus`` in the loader.
 
-    Reads only four scalar columns, so this is far cheaper than a full market load.
+    Reads only four scalar columns, so it is far cheaper than a full market load.
     """
     from engine_v4 import hf
 

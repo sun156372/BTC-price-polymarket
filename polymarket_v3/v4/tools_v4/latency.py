@@ -19,12 +19,12 @@ from collections import defaultdict
 sys.path.insert(0, ".")
 from engine_v4.strategy import V4Params  # noqa: E402
 from paths import resolve_data_root  # noqa: E402
-sys.path.insert(0, "tools_v4")
 
 def _resolve_default_root() -> str:
     """Dataset location, resolved by tools_v4/paths.py (see its docstring)."""
     return resolve_data_root(required=False) or 'micro_v3'
 
+sys.path.insert(0, "tools_v4")
 import backtest as B
 from engine_v4 import hf
 

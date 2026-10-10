@@ -296,7 +296,7 @@ def cmd_run(params: V4Params, stake: float, log_dir: str, seconds: float) -> int
             state = session.get(slug)
             try:
                 _evaluate_window(strategy, feed, spot_feed, market, state, params,
-                                 stake, decisions_path)
+                                 stake, decisions_path, slug)
             except FeedError as exc:
                 print(f"  [{utc()}] {slug}: feed error - {exc}")
             except Exception as exc:                      # noqa: BLE001
@@ -311,12 +311,21 @@ def cmd_run(params: V4Params, stake: float, log_dir: str, seconds: float) -> int
 
 def _evaluate_window(strategy: StrategyV4, feed: PolymarketFeed,
                      spot_feed: SpotFeed, market, state: WindowState | None,
-                     params: V4Params, stake: float, decisions_path: str) -> None:
+                     params: V4Params, stake: float, decisions_path: str,
+                     slug: str) -> None:
+    """Score one window and append the decision to the log.
+
+    Every name used below is either a parameter or assigned here. This function once
+    lost two of them during a refactor (``up_mid_now`` and ``slug``) and the only
+    symptom was a NameError on the first live window, so the assignments are kept
+    together and explicit rather than spread across branches.
+    """
     decided_at = time.time()
     spot_now_q = spot_feed.quote()
     up_book = feed.book(market.up_token)
-    down_book = feed.book(market.down_token)
 
+    # the mid now, and the mid at the window open (recorded when the window opened)
+    up_mid_now = up_book.mid
     up_mid_open = state.up_mid_open if state else None
     spot_open = state.spot_open if state else None
     spot_now = spot_now_q.price if spot_now_q else None
@@ -325,7 +334,8 @@ def _evaluate_window(strategy: StrategyV4, feed: PolymarketFeed,
     picked = strategy.direction(up_mid_open, up_mid_now)
     side = picked[0] if picked else ""
     move = picked[1] if picked else 0.0
-    book = up_book if side == "UP" else down_book
+    # the book on the side actually being bought; fetched only once the side is known
+    book = up_book if side != "DOWN" else feed.book(market.down_token)
     ask = book.best_ask
     ask_1s = ask_2s = None
     if ask is not None:

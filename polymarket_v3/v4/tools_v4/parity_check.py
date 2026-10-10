@@ -20,12 +20,12 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from paths import resolve_data_root  # noqa: E402
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def _resolve_default_root() -> str:
     """Dataset location, resolved by tools_v4/paths.py (see its docstring)."""
     return resolve_data_root(required=False) or 'micro_v3'
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import slim  # noqa: E402
 from engine_v4 import hf  # noqa: E402

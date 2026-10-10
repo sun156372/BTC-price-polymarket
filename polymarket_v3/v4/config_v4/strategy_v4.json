@@ -2,7 +2,7 @@
   "_README": [
     "V4 imbalance strategy configuration.",
     "",
-    "Edit SHIPPED_CELL below to change what run_strategy_v4.py and run_live_v4.py use.",
+    "Edit SHIPPED_CELL to change what run_strategy_v4.py and run_live_v4.py use.",
     "Every number here was measured; the 'source' fields say where. Do not change a",
     "value without re-running the corresponding check, because the thresholds are",
     "pre-registered and re-tuning them on the same data destroys their validity.",
@@ -30,7 +30,7 @@
       "meaning": "Seconds before the window closes when the decision is made.",
       "shipped": 180.0,
       "why": "Earlier is better: the win rate barely changes while the price is lower.",
-      "sweep": "tools: checkpoint sweep. Out-of-sample, imbalance gate fixed at 0.30.",
+      "sweep": "tools_v4/checkpoint_sweep.py with the imbalance gate fixed at 0.30.",
       "alternatives": {
         "240": {"per_day": 0.0868, "trades_per_day": 26, "entry": 0.819, "days_positive": "21/22"},
         "210": {"per_day": 0.0629, "trades_per_day": 41, "entry": 0.853, "days_positive": "21/22"},
@@ -48,7 +48,7 @@
     "min_book_imbalance": {
       "meaning": "Minimum |full-depth bid-ask notional imbalance|, oriented to the side bought.",
       "shipped": 0.30,
-      "why": "THE EDGE. Pre-registered at 0.30 before the final 7 days arrived, which then returned +6.15%/day over 7/7 positive days. With the gate off the same period returns -0.02%/day.",
+      "why": "THE EDGE. Pre-registered at 0.30 before the final 7 days arrived, which then returned +5.95%/day over 7/7 positive days. With the gate off the same period is flat.",
       "plateau": "Every floor from 0.15 to 0.60 was profitable out of sample, so this is a plateau rather than a spike. Do NOT re-tune it: it is pre-registered.",
       "live_calibration_warning": "The gate was calibrated on the dataset's full_depth_bid_notional / full_depth_ask_notional. If the live CLOB book endpoint returns a shallower top-N view, the scale differs and this threshold would need recalibrating. run_live_v4.py probe prints the live notionals so the two can be compared before trusting the gate."
     },
@@ -60,7 +60,7 @@
     "max_entry_price": {
       "meaning": "Entry price cap. 1.0 means disabled.",
       "shipped": 1.0,
-      "why": "DISABLED ON PURPOSE. Tightening it LOWERED returns, because accuracy rises with price, so a cap discards the most accurate trades. Out-of-sample pooled: 0.88 -> -1.11%, 0.90 -> -0.54%, no cap -> -0.17% (before the imbalance gate existed)."
+      "why": "DISABLED ON PURPOSE. Tightening it LOWERED returns, because accuracy rises with price, so a cap discards the most accurate trades. Out-of-sample pooled: 0.88 -> -1.11%, 0.90 -> -0.54%, no cap -> -0.17% (measured before the imbalance gate existed)."
     },
     "take_profit_stop_loss": {
       "shipped": "both off (1.0)",
@@ -68,7 +68,7 @@
     },
     "fee_coefficient": {
       "shipped": 0.07,
-      "why": "Crypto-category taker rate, confirmed against the venue documentation. fee = C x 0.07 x p x (1-p), takers only, settlement is not a trade so no exit fee. Break-even fee for this strategy was 0.053, so the 0.07 rate matters: at a 0.88 entry the fee is ~0.74 cents/share against an edge of ~5 points."
+      "why": "Crypto-category taker rate, confirmed against the venue documentation. fee = C x 0.07 x p x (1-p), takers only, settlement is not a trade so no exit fee. Break-even fee for this strategy was 0.053, so the rate matters."
     }
   },
 
@@ -80,7 +80,7 @@
         "accuracy": 0.936, "entry": 0.880,
         "pooled_per_share": 0.0496, "day_mean": 0.0493,
         "days_positive": "21/22",
-        "two_sigma": [0.0400, 0.0586]
+        "two_sigma": [0.0392, 0.0595]
       },
       "in_sample": {
         "days": 22, "trades": 1162, "trades_per_day": 52.8,
@@ -88,23 +88,21 @@
         "pooled_per_share": 0.0588, "day_mean": 0.0582,
         "days_positive": "22/22"
       },
-      "year_of_the_road": {
-        "newly_added_days_after_the_rule_was_declared": {
-          "days": 7, "trades": 383, "accuracy": 0.943,
-          "day_mean": 0.0615, "days_positive": "7/7"
-        }
+      "newly_added_days_after_the_rule_was_declared": {
+        "days": 7, "trades": 386, "accuracy": 0.933,
+        "day_mean": 0.0595, "days_positive": "7/7"
       }
     },
     "with_the_gate_OFF": {
-      "out_of_sample_day_mean": -0.0002,
-      "accuracy": 0.871,
-      "comment": "This is the whole point: the same strategy without the imbalance gate is flat to negative, because the market is fairly priced and the fee exceeds the edge."
+      "out_of_sample_day_mean": 0.0019,
+      "accuracy": 0.872,
+      "comment": "The whole point: the same strategy without the imbalance gate is flat, because the market is fairly priced and the fee absorbs the edge."
     },
     "slippage_tolerance": {
-      "_note": "The edge survives at least this much extra fill cost, per share.",
-      "0.0_cents": 0.0476, "1.0_cents": 0.0381, "2.0_cents": 0.0287,
-      "3.0_cents": 0.0196,
-      "comment": "Contrast with the pre-imbalance configuration, which went negative at 2 cents. This is the single biggest practical improvement."
+      "_note": "Net per share of stake at a 0.88 entry, 93.6% accuracy, fee 0.07.",
+      "0_cents": 0.0552, "1_cent": 0.0440, "2_cents": 0.0330,
+      "3_cents": 0.0223, "4_cents": 0.0118, "5_cents": 0.0016,
+      "comment": "The edge survives about 4 cents of extra fill cost. The pre-imbalance configuration went negative at 2 cents. This is the single biggest practical improvement."
     }
   },
 
