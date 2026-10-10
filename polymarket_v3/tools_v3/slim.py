@@ -80,8 +80,15 @@ class SlimMarket:
     _deadlines: list[float] = dataclasses.field(default_factory=list)
 
     def __post_init__(self) -> None:
-        # cached ticks are already chronological; mirror the countdowns ascending
+        # ``ticks`` is chronological, so its countdowns DESCEND. Bisecting needs an
+        # ASCENDING list, so keep one - but then the index must be translated:
+        #     _deadlines[i] corresponds to ticks[len(ticks) - 1 - i]
+        # Indexing both lists with the same number is a silent ~57-second error that
+        # still returns a plausible price. tools_v3/parity_v4.py guards against it.
         self._deadlines = sorted(t.to_deadline_ms for t in self.ticks)
+
+    def _tick_for_deadline_index(self, i: int) -> SlimTick:
+        return self.ticks[len(self.ticks) - 1 - i]
 
     def first_tick(self) -> SlimTick | None:
         return self.ticks[0] if self.ticks else None
@@ -91,20 +98,32 @@ class SlimMarket:
         return None if t is None else t.up_mid
 
     def tick_at_t_minus(self, t_minus_s: float,
-                        tolerance_s: float = 1.5) -> SlimTick | None:
-        """Chronologically FIRST tick within tolerance of ``t_minus_s`` before close."""
+                        tolerance_s: float = 1.0) -> SlimTick | None:
+        """The tick nearest ``t_minus_s`` seconds before the close.
+
+        Byte-for-byte the same semantics as ``engine_v3.hf.Market.tick_at_t_minus``:
+        bisect to the target, then consider the three candidates around the
+        insertion point and keep the CLOSEST one within tolerance. The only
+        difference is the index translation, because ``ticks`` is descending while
+        ``_deadlines`` ascends.
+
+        Getting this wrong is not loud. An earlier version scanned outward from a
+        mis-mapped index and returned a real price from ~57 seconds earlier, which
+        every downstream number accepted without complaint. tools_v3/parity_v4.py
+        now asserts equality against the authoritative loader.
+        """
         if not self.ticks:
             return None
         target = t_minus_s * 1000.0
-        lo = bisect.bisect_left(self._deadlines, target - tolerance_s * 1000.0)
+        index = bisect.bisect_left(self._deadlines, target)
         best = None
-        while lo < len(self._deadlines):
-            if self._deadlines[lo] > target + tolerance_s * 1000.0:
-                break
-            candidate = self.ticks[lo]
-            if best is None or candidate.ts < best.ts:
-                best = candidate
-            lo += 1
+        best_gap = None
+        for candidate in (index - 1, index, index + 1):
+            if 0 <= candidate < len(self._deadlines):
+                tick = self._tick_for_deadline_index(candidate)
+                gap = abs(tick.to_deadline_ms - target)
+                if gap <= tolerance_s * 1000.0 and (best_gap is None or gap < best_gap):
+                    best, best_gap = tick, gap
         return best
 
 

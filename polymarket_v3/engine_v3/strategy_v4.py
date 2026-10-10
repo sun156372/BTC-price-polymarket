@@ -82,13 +82,23 @@ class V4Params:
     idea. It needs a fresh sample before real capital.
     """
 
-    #: Seconds before the close. T-120 on a 5m window = 180s in.
+    #: Seconds before the close. T-180 on a 5m window = 120s in.
     #:
-    #: This moved from 240 to 120 because of the out-of-sample test. Selecting on
-    #: the in-sample period alone chose T-240 with NO filter, which then went to
-    #: -0.86%/share on ten unseen days in May. T-120 with the filter held up
-    #: (+1.02%/share in sample, +1.02% out of sample) and trades far more often.
-    entry_t_minus: float = 120.0
+    #: The entry time matters enormously and the relationship is MONOTONE: earlier is
+    #: better, because the win rate barely moves while the price does not yet include
+    #: the move. Measured after fixing the cache index bug, with the imbalance gate
+    #: held at 0.30 (tools_v3/checkpoint_sweep_v4.py):
+    #:
+    #:   T-240  +8.68%/day out  26/day  entry 0.819  21/22 days positive
+    #:   T-210  +6.29%/day out  41/day  entry 0.853  21/22
+    #:   T-180  +4.93%/day out  52/day  entry 0.880  21/22   <- shipped
+    #:   T-150  +3.87%/day out  62/day  entry 0.900  21/22
+    #:   T-120  +0.77%/day out  71/day  entry 0.928  14/22   <- flat
+    #:
+    #: T-240 is the point estimate optimum but trades only 26/day, so T-180 is shipped
+    #: as the balance of sample size and edge. THIS IS A KNOB WORTH SWEEPING during
+    #: paper trading: see SHIPPED_CELLS in config_v4 for the tested alternatives.
+    entry_t_minus: float = 180.0
     #: Minimum |move| of the Up token since the open, in probability points.
     #: 0.20 keeps the highest accuracy at every checkpoint; every threshold at or
     #: below 0.12 lost money across 14 in-sample days.

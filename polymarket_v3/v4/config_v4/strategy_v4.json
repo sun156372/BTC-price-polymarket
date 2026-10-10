@@ -1,0 +1,150 @@
+{
+  "_README": [
+    "V4 imbalance strategy configuration.",
+    "",
+    "Edit SHIPPED_CELL below to change what run_strategy_v4.py and run_live_v4.py use.",
+    "Every number here was measured; the 'source' fields say where. Do not change a",
+    "value without re-running the corresponding check, because the thresholds are",
+    "pre-registered and re-tuning them on the same data destroys their validity.",
+    "",
+    "The one knob genuinely worth sweeping during paper trading is entry_t_minus."
+  ],
+
+  "SHIPPED_CELL": {
+    "entry_t_minus": 180.0,
+    "threshold": 0.20,
+    "mode": "follow",
+    "take_profit": 1.0,
+    "stop_loss": 1.0,
+    "min_spot_move": 0.00045,
+    "min_book_imbalance": 0.30,
+    "max_entry_price": 1.0,
+    "max_quote_staleness_s": 2.0,
+    "max_slippage_cents": 2.0,
+    "require_measured_fill": true,
+    "fee_coefficient": 0.07
+  },
+
+  "FIELD_NOTES": {
+    "entry_t_minus": {
+      "meaning": "Seconds before the window closes when the decision is made.",
+      "shipped": 180.0,
+      "why": "Earlier is better: the win rate barely changes while the price is lower.",
+      "sweep": "tools: checkpoint sweep. Out-of-sample, imbalance gate fixed at 0.30.",
+      "alternatives": {
+        "240": {"per_day": 0.0868, "trades_per_day": 26, "entry": 0.819, "days_positive": "21/22"},
+        "210": {"per_day": 0.0629, "trades_per_day": 41, "entry": 0.853, "days_positive": "21/22"},
+        "180": {"per_day": 0.0493, "trades_per_day": 52, "entry": 0.880, "days_positive": "21/22"},
+        "150": {"per_day": 0.0387, "trades_per_day": 62, "entry": 0.900, "days_positive": "21/22"},
+        "120": {"per_day": 0.0077, "trades_per_day": 71, "entry": 0.928, "days_positive": "14/22"}
+      }
+    },
+    "threshold": {
+      "meaning": "Minimum |Up-token move since the open|, in probability points.",
+      "shipped": 0.20,
+      "why": "Everything at or below 0.12 lost money across the sample.",
+      "do_not_lower": true
+    },
+    "min_book_imbalance": {
+      "meaning": "Minimum |full-depth bid-ask notional imbalance|, oriented to the side bought.",
+      "shipped": 0.30,
+      "why": "THE EDGE. Pre-registered at 0.30 before the final 7 days arrived, which then returned +6.15%/day over 7/7 positive days. With the gate off the same period returns -0.02%/day.",
+      "plateau": "Every floor from 0.15 to 0.60 was profitable out of sample, so this is a plateau rather than a spike. Do NOT re-tune it: it is pre-registered.",
+      "live_calibration_warning": "The gate was calibrated on the dataset's full_depth_bid_notional / full_depth_ask_notional. If the live CLOB book endpoint returns a shallower top-N view, the scale differs and this threshold would need recalibrating. run_live_v4.py probe prints the live notionals so the two can be compared before trusting the gate."
+    },
+    "min_spot_move": {
+      "meaning": "Minimum |BTC spot move since the window open|, as a fraction.",
+      "shipped": 0.00045,
+      "why": "Secondary gate: a token move the underlying does not support is unbacked. Survived out-of-sample testing on its own, but the imbalance gate now carries the edge."
+    },
+    "max_entry_price": {
+      "meaning": "Entry price cap. 1.0 means disabled.",
+      "shipped": 1.0,
+      "why": "DISABLED ON PURPOSE. Tightening it LOWERED returns, because accuracy rises with price, so a cap discards the most accurate trades. Out-of-sample pooled: 0.88 -> -1.11%, 0.90 -> -0.54%, no cap -> -0.17% (before the imbalance gate existed)."
+    },
+    "take_profit_stop_loss": {
+      "shipped": "both off (1.0)",
+      "why": "Every tight take profit won more trades and lost money (it truncates winners). Stops at 0.20 and 0.30 both reduced P&L."
+    },
+    "fee_coefficient": {
+      "shipped": 0.07,
+      "why": "Crypto-category taker rate, confirmed against the venue documentation. fee = C x 0.07 x p x (1-p), takers only, settlement is not a trade so no exit fee. Break-even fee for this strategy was 0.053, so the 0.07 rate matters: at a 0.88 entry the fee is ~0.74 cents/share against an edge of ~5 points."
+    }
+  },
+
+  "MEASURED_PERFORMANCE": {
+    "_note": "44 days / 12,670 markets. Training 22 days, out-of-sample 22 days.",
+    "shipped_cell_at_T180": {
+      "out_of_sample": {
+        "days": 22, "trades": 1145, "trades_per_day": 52.0,
+        "accuracy": 0.936, "entry": 0.880,
+        "pooled_per_share": 0.0496, "day_mean": 0.0493,
+        "days_positive": "21/22",
+        "two_sigma": [0.0400, 0.0586]
+      },
+      "in_sample": {
+        "days": 22, "trades": 1162, "trades_per_day": 52.8,
+        "accuracy": 0.934, "entry": 0.867,
+        "pooled_per_share": 0.0588, "day_mean": 0.0582,
+        "days_positive": "22/22"
+      },
+      "year_of_the_road": {
+        "newly_added_days_after_the_rule_was_declared": {
+          "days": 7, "trades": 383, "accuracy": 0.943,
+          "day_mean": 0.0615, "days_positive": "7/7"
+        }
+      }
+    },
+    "with_the_gate_OFF": {
+      "out_of_sample_day_mean": -0.0002,
+      "accuracy": 0.871,
+      "comment": "This is the whole point: the same strategy without the imbalance gate is flat to negative, because the market is fairly priced and the fee exceeds the edge."
+    },
+    "slippage_tolerance": {
+      "_note": "The edge survives at least this much extra fill cost, per share.",
+      "0.0_cents": 0.0476, "1.0_cents": 0.0381, "2.0_cents": 0.0287,
+      "3.0_cents": 0.0196,
+      "comment": "Contrast with the pre-imbalance configuration, which went negative at 2 cents. This is the single biggest practical improvement."
+    }
+  },
+
+  "LIVE_CHECKS": {
+    "_note": "What to watch during paper trading, in priority order.",
+    "1_latency_drift": {
+      "what": "ask at decision vs ask 1s and 2s later",
+      "why": "The backtest assumed a fill at the decision ask. This is the gap that decides live profitability.",
+      "tolerance_cents": 3.0,
+      "where": "run_live_v4.py report prints median and p90"
+    },
+    "2_imbalance_scale": {
+      "what": "live bid/ask notional against the dataset's full_depth_*_notional",
+      "why": "If the live book is a shallower view, the 0.30 threshold means something different.",
+      "where": "run_live_v4.py probe"
+    },
+    "3_spot_freshness": {
+      "what": "spot quote age and source",
+      "why": "A stale spot price can flip the 4.5bps gate, which is a small move.",
+      "where": "decisions.csv columns spot_age_s and spot_source"
+    },
+    "4_refusal_mix": {
+      "what": "counts per refusal reason",
+      "why": "A sudden shift means the feed or the market changed, not that the strategy stopped working.",
+      "where": "run_live_v4.py report"
+    },
+    "5_realised_frequency": {
+      "what": "trades per day actually taken",
+      "why": "Backtest expects ~52/day at T-180. A large shortfall means gates are firing unexpectedly.",
+      "where": "run_live_v4.py report"
+    }
+  },
+
+  "KILL_CRITERIA": {
+    "_note": "Decide these BEFORE the session, so the decision is not made emotionally mid-run.",
+    "abort_if": [
+      "median latency drift exceeds 3 cents per share",
+      "live book notional is orders of magnitude smaller than the dataset's, so the imbalance gate cannot be trusted",
+      "realised trades per day is under a third of the expected 52",
+      "30+ settled trades accumulate and the win rate is below 90%"
+    ]
+  }
+}
