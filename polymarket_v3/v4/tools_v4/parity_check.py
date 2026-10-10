@@ -19,7 +19,13 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from paths import resolve_data_root  # noqa: E402
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+def _resolve_default_root() -> str:
+    """Dataset location, resolved by tools_v4/paths.py (see its docstring)."""
+    return resolve_data_root(required=False) or 'micro_v3'
+
 
 import slim  # noqa: E402
 from engine_v4 import hf  # noqa: E402
@@ -28,11 +34,10 @@ CHECKPOINTS = (300.0, 240.0, 180.0, 120.0, 60.0, 30.0)
 
 
 def main(argv=None) -> int:
-    workspace = os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__))))
+    workspace = _resolve_default_root()
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--root", default=os.path.join(workspace, "micro_v3"))
+    parser.add_argument("--root", default=resolve_data_root(required=False) or 'micro_v3')
     parser.add_argument("--markets", type=int, default=150)
     args = parser.parse_args(argv)
     root = args.root

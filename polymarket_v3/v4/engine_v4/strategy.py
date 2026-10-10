@@ -87,7 +87,7 @@ class V4Params:
     #: The entry time matters enormously and the relationship is MONOTONE: earlier is
     #: better, because the win rate barely moves while the price does not yet include
     #: the move. Measured after fixing the cache index bug, with the imbalance gate
-    #: held at 0.30 (the research tree (not shipped)):
+    #: held at 0.30 (tools_v4/checkpoint_sweep.py):
     #:
     #:   T-240  +8.68%/day out  26/day  entry 0.819  21/22 days positive
     #:   T-210  +6.29%/day out  41/day  entry 0.853  21/22
@@ -129,7 +129,7 @@ class V4Params:
     #: and those trades lose badly: at moves of 0.20-0.30 the balanced bucket returns
     #: -9.59%/share against +11.07% when lopsided.
     min_book_imbalance: float = 0.30
-    #: Entry-price cap. Swept 0.70 -> no cap in the research tree (not shipped).
+    #: Entry-price cap. Swept 0.70 -> no cap in tools_v4/cap_sweep.py.
     #:
     #: The cap was originally justified as "above break-even is negative EV", which
     #: is true for a trade of FIXED accuracy. But accuracy RISES with price - the

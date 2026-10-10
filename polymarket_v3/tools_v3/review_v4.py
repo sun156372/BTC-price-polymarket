@@ -116,28 +116,51 @@ def main(argv=None) -> int:
     check("wall-clock timestamps increase (chronological tape)",
           chron == len(markets), f"{chron}/{len(markets)}")
 
-    # T-120 must be near the close, i.e. near the END of the tape
-    near_end = 0
+    # T-k must return a tick whose COUNTDOWN is actually near k seconds. That is the
+    # definition, and it is a far stronger check than a positional heuristic: tick
+    # spacing is not uniform in time (quiet stretches of a window carry far fewer
+    # 100ms rows than busy ones), so "index / length" does not map to elapsed time.
+    # An earlier version of this test compared that ratio to a fixed threshold and
+    # reported a failure that was entirely its own.
+    off_by = []
+    missing = 0
     for m in markets:
         t = m.tick_at_t_minus(CHECKPOINT, tolerance_s=1.5)
         if t is None:
+            missing += 1
             continue
-        idx = m.ticks.index(t)
-        if idx > len(m.ticks) * 0.6:
-            near_end += 1
-    check("T-120 resolves to a late tick, not an early one",
-          near_end >= len(markets) * 0.9, f"{near_end}/{len(markets)}")
+        off_by.append(abs(t.to_deadline_ms - CHECKPOINT * 1000.0))
+    if off_by:
+        off_by.sort()
+        worst = off_by[-1]
+        median = off_by[len(off_by) // 2]
+        check(f"T-{CHECKPOINT:.0f} returns a tick whose countdown is within tolerance",
+              worst <= 1500.0 and missing <= len(markets) * 0.02,
+              f"median off by {median:.0f}ms, worst {worst:.0f}ms, "
+              f"{missing}/{len(markets)} missing")
+    else:
+        check(f"T-{CHECKPOINT:.0f} resolves for at least one market",
+              False, "no tick found at all")
 
     print()
     print("=" * 96)
     print("2. DIRECTION AND SIDE PRICING")
     print("=" * 96)
-    up, mv = strategy.direction(0.40, 0.60)
+    # Move sizes derive from the configured threshold. A literal 0.20 stops being a
+    # valid "strong" move the moment the threshold reaches 0.20, which is exactly how
+    # this test broke once already.
+    strong = p.threshold * 1.5
+    up, mv = strategy.direction(0.40, 0.40 + strong)
     check("a rise buys UP", up == "UP", f"{up} {mv:+.2f}")
-    down, mv = strategy.direction(0.60, 0.40)
+    down, mv = strategy.direction(0.40 + strong, 0.40)
     check("a fall buys DOWN", down == "DOWN", f"{down} {mv:+.2f}")
     check("a move below threshold is refused",
           strategy.direction(0.40, 0.40 + p.threshold * 0.5) is None)
+    # the gate is "|move| >= threshold", so a move just UNDER it must be refused.
+    # Testing exactly AT it would be testing the wrong side of the comparison.
+    check("a move just under the threshold is refused",
+          strategy.direction(0.40, 0.40 + p.threshold - 1e-9) is None,
+          f"threshold {p.threshold}")
 
     # the ask used must belong to the side bought
     mismatches = 0
@@ -166,9 +189,15 @@ def main(argv=None) -> int:
         expected = 0.07 * price * (1 - price)
         check(f"fee at {price} matches 0.07*p*(1-p)",
               abs(fee - expected) < 1e-15, f"{fee:.6f}")
+    # The fee is symmetric in exact arithmetic but NOT bit-identical in floating
+    # point: f(0.7) and f(0.3) differ by ~3e-18. Compare with a tolerance, or this
+    # asserts something false.
+    _sym = abs(taker_fee_per_share(0.7) - taker_fee_per_share(0.3))
     check("fee peaks at 0.50 and falls symmetrically",
-          taker_fee_per_share(0.5) > taker_fee_per_share(0.7) == taker_fee_per_share(0.3),
-          "symmetric")
+          taker_fee_per_share(0.5) > taker_fee_per_share(0.7) and _sym < 1e-15,
+          f"f(0.5)={taker_fee_per_share(0.5):.6f} "
+          f"f(0.7)={taker_fee_per_share(0.7):.6f} "
+          f"f(0.3)={taker_fee_per_share(0.3):.6f} gap={_sym:.1e}")
     check("fee vanishes at the extremes",
           taker_fee_per_share(0.001) < 1e-4, f"{taker_fee_per_share(0.001):.2e}")
     be = break_even_accuracy(0.88, 0.07)

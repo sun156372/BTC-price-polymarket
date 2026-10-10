@@ -39,6 +39,12 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from paths import resolve_data_root  # noqa: E402
+
+def _resolve_default_root() -> str:
+    """Dataset location, resolved by tools_v4/paths.py (see its docstring)."""
+    return resolve_data_root(required=False) or 'micro_v3'
+
 
 from engine_v4 import hf  # noqa: E402
 
@@ -201,11 +207,10 @@ def build(root: str, force: bool = False, progress_every: int = 1000) -> int:
 
 
 def main(argv=None) -> int:
-    workspace = os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.abspath(__file__))))
+    workspace = _resolve_default_root()
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--root", default=os.path.join(workspace, "micro_v3"))
+    parser.add_argument("--root", default=resolve_data_root(required=False) or 'micro_v3')
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args(argv)
     return build(args.root, force=args.force)

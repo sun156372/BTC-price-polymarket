@@ -36,7 +36,7 @@ Two dataset defects, verified
    the close back to the open. Iterating them forward therefore reads the tape
    backwards, and a first-touch exit model silently reports the LAST price touch
    instead of the first. This produced a 0.69 take-profit "filling" at 0.99. Ticks
-   are re-sorted to chronological order here, and ``backtest_v4.py`` refuses to run
+   are re-sorted to chronological order here, and ``backtest.py`` refuses to run
    if the order ever regresses.
 
 Why this dataset is the right one for the job

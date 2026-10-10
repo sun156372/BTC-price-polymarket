@@ -113,7 +113,7 @@ def cmd_selfcheck(params: V4Params) -> int:
     check("fee vanishes at the extremes",
           taker_fee_per_share(0.001) < 1e-4 and taker_fee_per_share(0.999) < 1e-4)
 
-    # 2. the cap. The sweep in the research tree (not shipped) showed that tightening it
+    # 2. the cap. The sweep in tools_v4/cap_sweep.py showed that tightening it
     #    LOWERS returns, because accuracy rises with price and the cap discards the
     #    most accurate trades. So no cap is the shipped design, and the test asserts
     #    the two valid states rather than assuming a binding cap.
@@ -510,7 +510,7 @@ def main(argv=None) -> int:
         return cmd_paper(params, args.snapshot)
     if args.command == "replay":
         sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools_v4"))
-        from backtest_v4 import run
+        from backtest import run
         root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         return run(os.path.join(root, "micro_v3"),
                    os.path.join(root, "output", "v4"),
